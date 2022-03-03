@@ -6,10 +6,11 @@ from apps.report.report_pages import Report
 
 
 class LandingPage(Container):
-    def __init__(self, root, parent):
+    def __init__(self, root, parent, engine):
         super().__init__(root, 'Library System Landing Page')
         self.init_image()
         self.parent = parent
+        self.engine = engine
 
         # reports option
         self.landing_report_image = self.open_image('apps/resources/reports.png', LANDING_PAGE_ICON_SIZE,
@@ -22,5 +23,5 @@ class LandingPage(Container):
         self.report_text.place(relx=0.7, rely=0.9, anchor='center')
 
     def go_to_report(self):
-        Report(self.root, self.parent)
+        Report(self.root, self.parent, self.engine)
         self.container.grid_forget()
