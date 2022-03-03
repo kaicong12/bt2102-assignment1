@@ -1,21 +1,14 @@
-from tkinter import Label, Button, Frame
+from tkinter import Label, Button
 from PIL import Image, ImageTk
 from apps.resources.variables import *
+from apps.resources.container import Container
 
 
-class Report:
-    def __init__(self, root):
-        self.root = root
-        root.title('Report Main Menu')
-
-        # container window, everything will be added to this container
-        self.container = Frame(root, bg='black', width=CANVAS_WIDTH, height=CANVAS_HEIGHT)
-        self.container.grid()
-
-        # background image, DOES NOT CHANGE DYNAMICALLY, so we do not allow prof to expand the window
-        self.image = self.open_image('apps/resources/library_wallpaper.png', CANVAS_WIDTH, CANVAS_HEIGHT)
-        self.background_image = Label(self.container, image=self.image)
-        self.background_image.grid()
+class Report(Container):
+    def __init__(self, root, parent):
+        super().__init__(root, 'Report Main Menu')
+        self.init_image()
+        self.parent = parent
 
         # reports image
         self.report = self.open_image('apps/resources/reports.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
@@ -32,7 +25,7 @@ class Report:
         self.label.place(relx=0.5, rely=0.09, anchor="center")  # label is always mid align
 
         # back to main_menu button
-        self.return_btn = Button(self.container, text='Back to Main Menu', command=self.return_to_main_menu,
+        self.return_btn = Button(self.container, text='Back to Main Menu', command=lambda: parent.return_to_main_menu(self),
                                  bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.5, rely=0.9, anchor="center")  # return_btn is always mid align
@@ -74,11 +67,9 @@ class Report:
         resized_image = ImageTk.PhotoImage(resized_image)
         return resized_image
 
-    def return_to_main_menu(self):
-        print('returning to main menu')
-
     def book_search(self):
-        print('Book search')
+        BookSearch(self.root, self.parent)
+        self.container.grid_forget()
 
     def book_on_loan(self):
         print('Books on Loan')
@@ -91,4 +82,24 @@ class Report:
 
     def books_loan_to_member(self):
         print('Books loan to members')
+
+
+class BookSearch(Container):
+    def __init__(self, root, parent):
+        super().__init__(root, 'Book Search')
+        self.init_image()
+        self.parent = parent
+
+        # back to main_menu button
+        self.return_btn = Button(self.container, text='Back to Main Menu', command=self.go_to_report,
+                                 bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
+        self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        self.return_btn.place(relx=0.5, rely=0.9, anchor="center")  # return_btn is always mid align
+
+    def go_to_report(self):
+        Report(self.root, self.parent)
+        self.container.grid_forget()
+
+
+
 
