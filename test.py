@@ -3,11 +3,7 @@ from PIL import Image, ImageTk
 from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
-<<<<<<< HEAD
 from apps.report.search import BookSearch, Notification
-=======
-from apps.report.search import BookSearch
->>>>>>> main
 
 from sqlalchemy import create_engine
 import pandas as pd
