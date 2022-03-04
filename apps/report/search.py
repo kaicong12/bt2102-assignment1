@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 from tkinter import Label, Button, Entry, Frame, Canvas, ttk, Tk
-=======
-from tkinter import Label, Button, Entry
->>>>>>> main
 from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
@@ -29,11 +25,7 @@ class BookSearch(Container):
         self.return_btn.place(relx=0.7, rely=0.9, anchor="center")
 
         # book search button
-<<<<<<< HEAD
         self.search_btn = Button(self.container, text='Search Book', command=self.go_to_notification,
-=======
-        self.search_btn = Button(self.container, text='Search Book', command=self.search_books,
->>>>>>> main
                                  bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
         self.search_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -80,7 +72,6 @@ class BookSearch(Container):
                                 width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
 
     def go_to_report(self):
-<<<<<<< HEAD
         Report(self.root, self.parent, self.engine)
         self.container.grid_forget()
 
@@ -98,11 +89,6 @@ class BookSearch(Container):
 
         Notification(self.root, 'Book Search Result', display_data)
 
-=======
-        Report(self.root, self.parent)
-        self.container.grid_forget()
-
->>>>>>> main
     def get_query_parameters(self):
         book_entry = [self.title_entry.get(), self.isbn_entry.get(),
                        self.publication_year_entry.get(), self.publisher_entry.get()]
@@ -131,11 +117,7 @@ class BookSearch(Container):
         keyword_idx = 0
         condition = ""
         if len(author_query) > 0:
-<<<<<<< HEAD
             author_conditon = " {} accession_no IN (SELECT book_accession FROM book_author WHERE author_name LIKE '%%{}%%')".\
-=======
-            author_conditon = " {} accession_no IN (SELECT book_accession FROM book_author WHERE author_name = '{}')".\
->>>>>>> main
                 format(keyword[keyword_idx], author_query['author_name'])
             keyword_idx += 1
             condition += author_conditon
@@ -151,7 +133,6 @@ class BookSearch(Container):
 
         cursor = self.engine.connect()
         data = cursor.execute(sql_statement).fetchall()
-<<<<<<< HEAD
 
         return data
 
@@ -212,13 +193,3 @@ class Notification:
 
         new_root.geometry('%dx%d+%d+%d' % (NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT,
                                        NOTIFICATION_X, NOTIFICATION_Y))
-
-
-
-
-
-
-
-=======
-        print(data)
->>>>>>> main
