@@ -151,7 +151,7 @@ class Notification:
     def __init__(self, root, heading_text, display_data):
         self.root = root
         NOTIFICATION_HEIGHT = 600
-        NOTIFICATION_WIDTH = 900
+        NOTIFICATION_WIDTH = 1000
         PARENT_SCREEN_WIDTH = self.root.winfo_screenwidth()  # this gets the width of your entire monitor
         PARENT_SCREEN_HEIGHT = self.root.winfo_screenheight()
 
@@ -188,7 +188,8 @@ class Notification:
                         background = '#cce5df'
                     else:
                         background = '#e7f2f0'
-                l = Label(second_frame, text=str(item), font=(FONT, font_size, STYLE), bg=background)
+                l = Label(second_frame, text=str(item), font=(FONT, font_size, STYLE),
+                          bg=background, wraplength=195)
                 l.grid(row=y, column=x, padx=2, pady=2, sticky='nsew')  # sticky = nsew expands north south east west
 
         new_root.geometry('%dx%d+%d+%d' % (NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT,
