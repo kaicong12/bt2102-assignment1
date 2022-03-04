@@ -29,3 +29,4 @@ REPORT_ENTRY_BOX_HEIGHT = 100
 REPORT_ENTRY_BOX_WIDTH = 700
 
 BOOKS_SEARCH = ['Accession Number', 'Title', 'ISBN', 'Publisher', 'Year', 'Author']
+BOOKS_ON_LOAN = ['Accession Number', 'Title', 'ISBN', 'Publisher', 'Year', 'Author']

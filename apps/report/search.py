@@ -1,9 +1,7 @@
-from tkinter import Label, Button, Entry, Frame, Scrollbar, Canvas, ttk, Tk
+from tkinter import Label, Button, Entry, Frame, Canvas, ttk, Tk
 from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
-
-
 
 
 class BookSearch(Container):
