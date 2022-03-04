@@ -73,16 +73,16 @@ class Report(Container):
         self.container.grid_forget()
 
     def book_on_loan(self):
-        print('Books on Loan')
+        Notification(self.root, 'Books on Loan', 'Back to Report', [])
 
     def book_on_reservation(self):
-        print('Book on reservation')
+        Notification(self.root, 'Books on Reservation', 'Back to Report', [])
 
     def outstanding_fine(self):
-        print('Outstanding Fines')
+        Notification(self.root, 'Outstanding Fines', 'Back to Report', [])
 
     def books_loan_to_member(self):
-        print('Books loan to members')
+        Notification(self.root, 'Books loan to members', 'Back to Report',  [])
 
 
 class BookSearch(Container):
@@ -106,7 +106,7 @@ class BookSearch(Container):
         self.return_btn.place(relx=0.7, rely=0.9, anchor="center")
 
         # book search button
-        self.search_btn = Button(self.container, text='Search Book', command=self.search_books,
+        self.search_btn = Button(self.container, text='Search Book', command=self.go_to_notification,
                                  bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
         self.search_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -156,6 +156,10 @@ class BookSearch(Container):
         Report(self.root, self.parent, self.engine)
         self.container.grid_forget()
 
+    def go_to_notification(self):
+        display_data = self.search_books()
+        Notification(self.root, 'Back to Book Search', display_data)
+
     def get_query_parameters(self):
         book_entry = [self.title_entry.get(), self.isbn_entry.get(),
                        self.publication_year_entry.get(), self.publisher_entry.get()]
@@ -184,7 +188,8 @@ class BookSearch(Container):
         keyword_idx = 0
         condition = ""
         if len(author_query) > 0:
-            author_conditon = " {} accession_no IN (SELECT book_accession FROM book_author WHERE author_name = '{}')".\
+            # putting double % as escape sign
+            author_conditon = " {} accession_no IN (SELECT book_accession FROM book_author WHERE author_name LIKE '%%{}%%')".\
                 format(keyword[keyword_idx], author_query['author_name'])
             keyword_idx += 1
             condition += author_conditon
@@ -200,11 +205,35 @@ class BookSearch(Container):
 
         cursor = self.engine.connect()
         data = cursor.execute(sql_statement).fetchall()
-        print(data)
+
+        return data
 
 
-class SearchNotification:
-    pass
+class Notification:
+    def __init__(self, root, heading_text, button_text, display_data):
+        self.root = root
+        # notification box
+        self.notification = Label(root, bg='green', height=50, width=150)
+        self.notification.place(relx=0.5, rely=0.5, anchor='center')
 
+        # notification title
+        self.notification_title = Label(root, text=heading_text)
+        self.notification_title.config(font=(FONT, FONT_SIZE, STYLE), bg='green')
+        self.notification_title.place(relx=0.5, rely=0.1, anchor='center')
+
+        # back to report_menu button
+        self.return_btn1 = Button(root, text=button_text, command=self.go_to_book_search,
+                                 bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
+                                 highlightthickness=4, highlightbackground="#eaba2d")
+        self.return_btn1.config(font=(FONT, FONT_SIZE, STYLE))
+        self.return_btn1.place(relx=0.5, rely=0.83, anchor="center")
+
+    def close_notification(self):
+        self.notification.lower()
+        self.notification_title.lower()
+        self.return_btn1.lower()
+
+    def go_to_book_search(self):
+        self.close_notification()
 
 
