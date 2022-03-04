@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 from tkinter import Label, Button, Entry, Tk, ttk, Canvas, Frame
 from PIL import Image, ImageTk
 from sqlalchemy import text
+=======
+from tkinter import Label, Button, Entry
+from PIL import Image, ImageTk
+>>>>>>> main
 from apps.resources.variables import *
 from apps.resources.container import Container
 
 
+<<<<<<< HEAD
 def search_author_for_each_book(engine, book_list):
     cursor = engine.connect()
     author_data = []
@@ -17,6 +23,8 @@ def search_author_for_each_book(engine, book_list):
     return author_data
 
 
+=======
+>>>>>>> main
 class Report(Container):
     def __init__(self, root, parent, engine):
         super().__init__(root, 'Report Main Menu')
@@ -86,6 +94,7 @@ class Report(Container):
         self.container.grid_forget()
 
     def book_on_loan(self):
+<<<<<<< HEAD
         sql_statement = text("SELECT l.BorrowedBookAccession, b.title, b.isbn, b.publisher, b.publication_year "
                              "FROM loan l LEFT JOIN books b ON l.BorrowedBookAccession = b.accession_no")
         cursor = self.engine.connect()
@@ -110,6 +119,18 @@ class Report(Container):
 
     def books_loan_to_member(self):
         Notification(self.root, 'Books loan to members', [])
+=======
+        print('Books on Loan')
+
+    def book_on_reservation(self):
+        print('Book on reservation')
+
+    def outstanding_fine(self):
+        print('Outstanding Fines')
+
+    def books_loan_to_member(self):
+        print('Books loan to members')
+>>>>>>> main
 
 
 class BookSearch(Container):
@@ -133,7 +154,11 @@ class BookSearch(Container):
         self.return_btn.place(relx=0.7, rely=0.9, anchor="center")
 
         # book search button
+<<<<<<< HEAD
         self.search_btn = Button(self.container, text='Search Book', command=self.go_to_notification,
+=======
+        self.search_btn = Button(self.container, text='Search Book', command=self.search_books,
+>>>>>>> main
                                  bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
         self.search_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -183,6 +208,7 @@ class BookSearch(Container):
         Report(self.root, self.parent, self.engine)
         self.container.grid_forget()
 
+<<<<<<< HEAD
     def go_to_notification(self):
         book_data = self.search_books()
         all_books_found = [data[0] for data in book_data]
@@ -200,6 +226,11 @@ class BookSearch(Container):
     def get_query_parameters(self):
         book_entry = [self.title_entry.get(), self.isbn_entry.get(),
                       self.publication_year_entry.get(), self.publisher_entry.get()]
+=======
+    def get_query_parameters(self):
+        book_entry = [self.title_entry.get(), self.isbn_entry.get(),
+                       self.publication_year_entry.get(), self.publisher_entry.get()]
+>>>>>>> main
         book_query_field = ['title', 'isbn', 'publication_year', 'publisher']
 
         author_entry = [self.author_entry.get()]
@@ -225,7 +256,11 @@ class BookSearch(Container):
         keyword_idx = 0
         condition = ""
         if len(author_query) > 0:
+<<<<<<< HEAD
             author_conditon = " {} accession_no IN (SELECT book_accession FROM book_author WHERE author_name LIKE '%%{}%%')". \
+=======
+            author_conditon = " {} accession_no IN (SELECT book_accession FROM book_author WHERE author_name = '{}')".\
+>>>>>>> main
                 format(keyword[keyword_idx], author_query['author_name'])
             keyword_idx += 1
             condition += author_conditon
@@ -241,6 +276,7 @@ class BookSearch(Container):
 
         cursor = self.engine.connect()
         data = cursor.execute(sql_statement).fetchall()
+<<<<<<< HEAD
 
         return data
 
@@ -292,3 +328,13 @@ class Notification:
 
         new_root.geometry('%dx%d+%d+%d' % (NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT,
                                        NOTIFICATION_X, NOTIFICATION_Y))
+=======
+        print(data)
+
+
+class SearchNotification:
+    pass
+
+
+
+>>>>>>> main
