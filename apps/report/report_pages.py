@@ -1,3 +1,4 @@
+from textwrap import wrap
 from tkinter import Label, Button, Entry, Tk, ttk, Canvas, Frame
 from PIL import Image, ImageTk
 from sqlalchemy import text
@@ -287,7 +288,7 @@ class Notification:
                         background = '#cce5df'
                     else:
                         background = '#e7f2f0'
-                l = Label(second_frame, text=str(item), font=(FONT, font_size, STYLE), bg=background, wraplength=195)
+                l = Label(second_frame, text=str(item), font=(FONT, font_size, STYLE), bg=background)
                 l.grid(row=y, column=x, padx=2, pady=2, sticky='nsew')  # sticky = nsew expands north south east west
 
         new_root.geometry('%dx%d+%d+%d' % (NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT,
