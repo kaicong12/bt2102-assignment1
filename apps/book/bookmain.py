@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
 import tkinter as tk
 from PIL import Image, ImageTk
-import menu
-from variables import *
+from bookinsertmenu import bookinsert
+from bookwithdrawmenu import BookWithdraw
+from apps.resources.variables import *
+from apps.resources.container import Container
 
 #USER = 'sashimitrash'
 #PASSWORD = ''
@@ -13,17 +15,17 @@ from variables import *
 #engine = create_engine('mysql+mysqlconnector://{0}:{1}@{2}[:{3}]/{4}'.format(USER, PASSWORD, HOST, PORT, DATABASE))
 #cursor = engine.connect()
 
-class BookLandingPage:
+class BookLandingPage(Container):
     def __init__(self, root):
-        self.root = root
-        root.title("Book Menu")
+        super().__init__(root, "Book Menu")
+        self.init_image()
 
-        def getroot(self):
-            return self.root
-
-        # container window, everything will be added to this container
-        self.container = tk.Frame(root, bg='white', width=CANVAS_WIDTH, height=CANVAS_HEIGHT)
-        self.container.grid()
+        #book image
+        self.book = self.open_image('apps/resources/book.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
+        self.book_image  = tk.Label(self.container, image=self.book)
+        self.book_image.place(relx=0.25, rely=0.45, anchor='center')
+        self.book_text = tk.Label(self.container, text='Books', font=(FONT, FONT_SIZE, STYLE), fg='white', bg='black')
+        self.book_text.place(relx=SIDE_TEXT_X, rely=SIDE_TEXT_Y, anchor='center')
 
         #instructions
         instructions = tk.Label(self.container, text='Select one of the options below:', fg='black', bg='#c5e3e5',
@@ -31,23 +33,24 @@ class BookLandingPage:
         instructions.config(font=(FONT, FONT_SIZE, STYLE))
         instructions.place(relx=0.5, rely=0.09, anchor="center")
 
-        #acquisition button)
-        aquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), menu.bookinsert(tk.Tk())],
+        #acquisition button
+        aquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookinsert(root)],
                                    text="Book Acquisition", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         aquisition_btn.config(font=(FONT, FONT_SIZE, STYLE))
         aquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
 
         #withdrawal button
-        withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), menu.bookinsert(root),],
+        withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), BookWithdraw(root)],
                                    text="Book Withdrawal", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         withdraw_btn.config(font=(FONT, FONT_SIZE, STYLE))
         withdraw_btn.place(relx=0.7, rely=0.5, anchor='center')
         
         #main menu button
         home_btn = tk.Button(self.container, text='Back to Main Menu', command=self.return_to_main_menu,
-                                 bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
+                                 bg='#c5e3e5', width=20, height=2, relief='raised',
+                                 borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        home_btn.place(relx=0.5, rely=0.7, anchor="center")  # return_btn is always mid align
+        home_btn.place(relx=0.7, rely=0.68, anchor="center") 
 
     def return_to_main_menu(self):
         print("a")

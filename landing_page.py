@@ -3,7 +3,7 @@ from tkinter import Label, Button
 from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
-from apps.book.main import BookLandingPage
+from apps.book.bookmain import BookLandingPage
 
 
 
@@ -28,11 +28,11 @@ class LandingPage(Container):
         self.landing_books_image = self.open_image('apps/resources/books.png', LANDING_PAGE_ICON_SIZE,
                                                     LANDING_PAGE_ICON_SIZE)
         self.books_btn = Button(root, image=self.landing_report_image, command=self.go_to_report)
-        self.books_btn.place(relx=0.7, rely=0.9, anchor='center')
+        self.books_btn.place(relx=0.7, rely=0.7, anchor='center')
         self.books_text = Label(root, text='Books', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
                                  fg='black',
                                  bg='white')
-        self.report_text.place(relx=0.7, rely=0.9, anchor='center')
+        self.report_text.place(relx=0.7, rely=0.7, anchor='center')
 
     def go_to_report(self):
         Report(self.root, self.parent, self.engine)

@@ -4,6 +4,7 @@ from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
 from apps.report.search import BookSearch, Notification
+from apps.book.bookmain import BookLandingPage
 
 from sqlalchemy import create_engine
 import pandas as pd
@@ -26,7 +27,7 @@ class testestest(Container):
 
         self.root = Tk()
 
-        self.landing = BookSearch(self.root, self, engine)
+        self.landing = BookLandingPage(self.root)
 
         self.root.mainloop()
 
