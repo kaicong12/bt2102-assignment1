@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 import tkinter as tk
-from variables import *
+from apps.resources.variables import *
 
 class BookInsertionSuccess:
     def __init__(self, accessionNo, title, authors, isbn, publisher, publication_year):

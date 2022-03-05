@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 import tkinter as tk
 import variables, success
-from variables import *
+from apps.resources.variables import *
 
 class bookinsert():
     def __init__(self, root):

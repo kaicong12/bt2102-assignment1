@@ -32,13 +32,13 @@ class BookLandingPage:
         instructions.place(relx=0.5, rely=0.09, anchor="center")
 
         #acquisition button)
-        aquisition_btn = tk.Button(self.container, command = lambda:[root.destroy, menu.bookinsert(tk.Tk())],
+        aquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), menu.bookinsert(tk.Tk())],
                                    text="Book Acquisition", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         aquisition_btn.config(font=(FONT, FONT_SIZE, STYLE))
         aquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
 
         #withdrawal button
-        withdraw_btn = tk.Button(self.container, command = lambda:[root.destroy, menu.bookinsert(root),],
+        withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), menu.bookinsert(root),],
                                    text="Book Withdrawal", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         withdraw_btn.config(font=(FONT, FONT_SIZE, STYLE))
         withdraw_btn.place(relx=0.7, rely=0.5, anchor='center')
