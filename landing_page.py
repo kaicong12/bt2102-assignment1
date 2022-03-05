@@ -6,6 +6,7 @@ from apps.report.report_pages import Report
 from apps.book.main import BookLandingPage
 
 
+
 class LandingPage(Container):
     def __init__(self, root, parent, engine):
         super().__init__(root, 'Library System Landing Page')
