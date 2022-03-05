@@ -2,23 +2,14 @@ from sqlalchemy import create_engine
 import tkinter as tk
 from variables import *
 
-class BookInsertionSuccess():
-    def __init__(self, root):
-        
-        self.root = root
-        root.title("Book aquisition success!")
-        root.geometry('400x300')
+class BookInsertionSuccess:
+    def __init__(self, accessionNo, title, authors, isbn, publisher, publication_year):
+        win= tk.Tk()
+        win.geometry("600x250")
+        w = Label(root, text ='Success', font = "50") 
+        w.pack()
 
-        #Textbox
-        mesage = '''Success! New book added into library'''
+        #insert sql code here
+        messagebox.showinfo("Book aquisition success!", "Success! New book added in Library")
 
-        success_box = tk.Text(root, width=60, height=20)
-        success_box.pack(expand=True)
-        success_box.insert('end', message)
-        success_box.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#17a1d5')
-
-        #main menu button
-        home_btn = tk.Button(root, text='Back to Acquisition Function', command=self.root.destroy,
-                                 bg='#c5e3e5', width=5, height=1, relief='raised', borderwidth=5)
-        home_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        home_btn.place(relx=0.5, rely=0.7, anchor="center")  # return_btn is always mid align
+        win.mainloop()
