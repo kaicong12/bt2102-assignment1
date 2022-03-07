@@ -1,9 +1,15 @@
 from sqlalchemy import create_engine
 import tkinter as tk
-import bookinsert
-from bookwithdraw import BookWithdrawSuccess
 from apps.resources.variables import *
 from apps.resources.container import Container
+
+#sql_statement = """SELECT FROM Books"""
+
+#table_df = pd.read_sql(
+#    sql_statement,
+#    con=engine
+#)
+#table_df
 
 class BookWithdraw(Container):
     def __init__(self, root):
@@ -40,3 +46,79 @@ class BookWithdraw(Container):
         home_btn.place(relx=0.7, rely=0.82, anchor="center")
 
         root.mainloop()
+        
+
+
+class BookWithdrawSuccess(Container):
+    def __init__(self, root, accessionNo):
+        super().__init__(root, "Book Menu")
+        self.init_image()
+
+        
+        
+        #insert sql code here to determine book on loan/ book on reservation/ success
+        #sql_statement = "Select * FROM fines WHERE memberid = '{}'".format(self.ID_entry.get())
+        #    data_fine = self.cursor.execute(sql_statement).fetchall()
+        #    if len(data_fine) > 0:
+        #        self.go_to_fineError
+
+        #sql code to retrieve accessionNo, title, authors, isbn, publisher, year
+                
+        self.success(self.root,"a","b","c","d","e","f")
+
+        root.mainloop()
+
+    #book on loan failure
+    def bookonloan(self, master):
+        instructions = tk.Label(self.container, text='Error! Book is currently on Loan.', fg='black', bg='#FF0000',
+                               relief='raised', width=60, height=3)
+        instructions.config(font=(FONT, FONT_SIZE, STYLE))
+        instructions.place(relx=0.5, rely=0.4, anchor="center")
+
+        #back to withdrawal button
+        home_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=lambda:[self.container.grid_forget(), BookWithdraw(self.root)],
+                                     bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
+        home_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        home_btn.place(relx=0.5, rely=0.7, anchor="center")
+
+    #book on reservation
+    def bookonreserve(self, master):
+        instructions = tk.Label(self.container, text='Error! Book is currently Reserved.', fg='black', bg='#FF0000',
+                               relief='raised', width=60, height=3)
+        instructions.config(font=(FONT, FONT_SIZE, STYLE))
+        instructions.place(relx=0.5, rely=0.4, anchor="center")
+
+        #back to withdrawal button
+        home_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=lambda:[self.container.grid_forget(), BookWithdraw(self.root)],
+                                     bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
+        home_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        home_btn.place(relx=0.5, rely=0.7, anchor="center")
+    
+
+    def success(self, master, accessionNo, title, authors, isbn, publisher, year): 
+        #success text box
+        success = tk.Label(self.container,
+                    text='Please Confirm Details to Be Correct\n\nAccession No.: {}\nTitle: {}\nAuthors: {}\nISBN: {}\nPublisher: {}\nYear: {}'.format(accessionNo, title, authors, isbn, publisher, year),
+                           fg='black', bg='#00FF00', relief='raised', width=60, height=9)
+        success.config(font=(FONT, FONT_SIZE, STYLE))
+        success.place(relx=0.5, rely=0.4, anchor="center")
+        
+        #confirm withdrawal button
+        b1 = tk.Button(self.container, text="Confirm Withdrawal",
+                    command=lambda:[self.container.grid_forget(), self.SQLWithdraw(accessionNo, title, authors, isbn, publisher, year), BookWithdraw(self.root)],
+                                     bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
+        b1.config(font=(FONT, FONT_SIZE, STYLE))
+        b1.place(relx=0.3, rely=0.7, anchor="center")
+
+        #back to withdrawal button
+        home_btn = tk.Button(self.container, text="Back to Withdrawal Function",
+                    command=lambda:[self.container.grid_forget(), BookWithdraw(self.root)],
+                                     bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
+        home_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        home_btn.place(relx=0.7, rely=0.7, anchor="center")
+            
+    def SQLWithdraw(self, accessionNo, title, authors, isbn, publisher, year):
+        print("test")
+        #sql code to delete book
+
+

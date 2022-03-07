@@ -6,14 +6,17 @@ from bookwithdrawmenu import BookWithdraw
 from apps.resources.variables import *
 from apps.resources.container import Container
 
-#USER = 'sashimitrash'
-#PASSWORD = ''
-#HOST = '127.0.0.1'
-#PORT = 3306
-#DATABASE = 'Library'
 
-#engine = create_engine('mysql+mysqlconnector://{0}:{1}@{2}[:{3}]/{4}'.format(USER, PASSWORD, HOST, PORT, DATABASE))
-#cursor = engine.connect()
+USER = 'root'
+PASSWORD = 'joansoh17'
+HOST = '127.0.0.1'
+PORT = 3306
+DATABASE = 'Library'
+
+engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
+            USER, PASSWORD, HOST, PORT, DATABASE))
+
+
 
 class BookLandingPage(Container):
     def __init__(self, root):
@@ -46,7 +49,7 @@ class BookLandingPage(Container):
         withdraw_btn.place(relx=0.7, rely=0.5, anchor='center')
         
         #main menu button
-        home_btn = tk.Button(self.container, text='Back to Main Menu', command=self.return_to_main_menu,
+        home_btn = tk.Button(self.container, text='Back to Main Menu',
                                  bg='#c5e3e5', width=20, height=2, relief='raised',
                                  borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))

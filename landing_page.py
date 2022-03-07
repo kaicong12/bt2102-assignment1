@@ -3,7 +3,7 @@ from tkinter import Label, Button
 from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
-from apps.book.bookmain import BookLandingPage
+#from apps.book.bookmain import BookLandingPage
 
 
 
@@ -38,7 +38,7 @@ class LandingPage(Container):
         Report(self.root, self.parent, self.engine)
         self.container.grid_forget()
 
-    def go_to_book(self):
-        BookLandingPage(self.root)
-        self.container.grid_forget()
+    #def go_to_book(self):
+        #BookLandingPage(self.root)
+        #self.container.grid_forget()
 
