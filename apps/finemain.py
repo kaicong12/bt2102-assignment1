@@ -171,23 +171,11 @@ class FinePaymentSuccess(Container):
         instructions.config(font=(FONT, FONT_SIZE, STYLE))
         instructions.place(relx=0.5, rely=0.4, anchor="center")
 
-        #back to withdrawal button
-        home_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.container.grid_forget(), FinePayment(self.root)],
-                                     bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
-        home_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        home_btn.place(relx=0.5, rely=0.7, anchor="center")
-
     def incorrectamt(self, master):
         instructions = tk.Label(self.container, text='Error! Incorrect fine payment amount', fg='black', bg='#FF0000',
                                relief='raised', width=60, height=3)
         instructions.config(font=(FONT, FONT_SIZE, STYLE))
         instructions.place(relx=0.5, rely=0.4, anchor="center")
-
-        #back to withdrawal button
-        home_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.container.grid_forget(), FinePayment(self.root)],
-                                     bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
-        home_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        home_btn.place(relx=0.5, rely=0.7, anchor="center")
 
 
 root = tk.Tk()
