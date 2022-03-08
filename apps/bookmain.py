@@ -9,11 +9,12 @@ USER = 'root'
 PASSWORD = 'joansoh17'
 HOST = '127.0.0.1'
 PORT = 3306
-DATABASE = 'Library'
+DATABASE = 'ALS'
 
 engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
             USER, PASSWORD, HOST, PORT, DATABASE))
 
+cursor = engine.connect()
 
 
 class BookLandingPage(Container):
@@ -135,24 +136,25 @@ class bookinsert(Container):
 
         root.mainloop()
 
-    #returning home
-    def return_to_books_menu():
-        return 
 
 class BookInsertionSuccess(Container):
     def __init__(self, root, accessionNo, title, authors, isbn, publisher, publication_year):
         super().__init__(root, "Book Menu")
         self.init_image()
 
+        #check for duplicate
+        sql_statement = "SELECT * FROM libbooks WHERE 'Accession Number' = '{}'".format(accessionNo)
+        data_book = cursor.execute(sql_statement).fetchall()
+
         #checking for missing or incomplete fields
         listOfInputs = [accessionNo, title, authors, isbn, publisher, publication_year]
         if "" in listOfInputs:
             return self.failed(self.root)
+        elif len(data_book) > 0:
+            return self.failed(self.root)
         else:
-            return self.success(self.root)
-
-        #check for duplicate
-
+            return self.success(self.root, accessionNo, title, authors, isbn, publisher, publication_year)
+        
         root.mainloop()
 
     def failed(self, master):
@@ -171,8 +173,21 @@ class BookInsertionSuccess(Container):
         home_btn.place(relx=0.5, rely=0.7, anchor="center")
     
 
-    def success(self, master):
-        #insert sql code here
+    def success(self, master, accessionNo, title, authors, isbn, publisher, publication_year):
+        #insert into book table
+        query = "INSERT INTO books (accession_no, title, isbn, publisher, publication_year) VALUES (%s, %s, %s, %s, %s)"
+        cursor.execute(query, (accessionNo, title, isbn, publisher, publication_year))
+
+        #insert into author table
+        authors = authors.split(",")
+        query2 = "INSERT INTO author (author_name, accessionNo) VALUES (%s, %s)"
+        cursor.execture(query2, (author_name, accessionNo))
+    
+        if authors[1] != '':
+            cursor.execute(query, (author[1], accession_no))
+    
+        if authors[2] != '':
+            cursor.execute(query, (author[2], accession_no))
     
         #success text box
         instructions = tk.Label(self.container, text='Success! New book added in Library', fg='black', bg='#00FF00',
@@ -233,17 +248,17 @@ class BookWithdrawSuccess(Container):
         super().__init__(root, "Book Menu")
         self.init_image()
 
-        
-        
-        #insert sql code here to determine book on loan/ book on reservation/ success
-        #sql_statement = "Select * FROM fines WHERE memberid = '{}'".format(self.ID_entry.get())
-        #    data_fine = self.cursor.execute(sql_statement).fetchall()
-        #    if len(data_fine) > 0:
-        #        self.go_to_fineError
-
-        #sql code to retrieve accessionNo, title, authors, isbn, publisher, year
-                
-        self.success(self.root,"a","b","c","d","e","f")
+        #sql code here to determine book on loan/ book on reservation/ success
+        sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = '{}'".format(accessionNo)
+        data_loan = self.cursor.execute(sql_statement).fetchall()
+        sql_statement2 = "SELECT * FROM Reservation WHERE ReservedBookAccession = '{}'".format(accessionNo)
+        data_reserve = self.cursor.execute(sql_statement2.fetchall()
+        if len(data_fine) > 0:
+            return self.bookonloan(self.root)
+        elif len(data_reserve) >0:
+            return self.bookonreserve(self.root)
+        else:
+            return self.success(self.root, accessionNo)
 
         root.mainloop()
 
@@ -274,17 +289,31 @@ class BookWithdrawSuccess(Container):
         home_btn.place(relx=0.5, rely=0.7, anchor="center")
     
 
-    def success(self, master, accessionNo, title, authors, isbn, publisher, year): 
+    def success(self, master, accessionNo):
+        #retrieving from sql
+        sql_statement = "Select * FROM books WHERE 'accession_no' = '{}'".format(accessionNo))
+        book_data = cursor.execute(sql_statement).fetchall()
+        title = book_data[1]
+        isbn = book_data[2]
+        publisher = book_data[3]
+        publication_year = book_data[4]
+
+        sql_statement2 = "Select * from book_author WHERE 'book_accession' = '{}'".format(accessionNo))
+        bookauthors_data = cursor.execute(sql_statement2).fetchall()
+        authors_string = bookauthors_data[0][0]
+        for author in bookauthors_data:
+            authors_string += String.format(", %s", author[0])
+        
         #success text box
         success = tk.Label(self.container,
-                    text='Please Confirm Details to Be Correct\n\nAccession No.: {}\nTitle: {}\nAuthors: {}\nISBN: {}\nPublisher: {}\nYear: {}'.format(accessionNo, title, authors, isbn, publisher, year),
+                    text='Please Confirm Details to Be Correct\n\nAccession No.: {}\nTitle: {}\nAuthors: {}\nISBN: {}\nPublisher: {}\nYear: {}'.format(accessionNo, title, authors_string, isbn, publisher, year),
                            fg='black', bg='#00FF00', relief='raised', width=60, height=9)
         success.config(font=(FONT, FONT_SIZE, STYLE))
         success.place(relx=0.5, rely=0.4, anchor="center")
         
         #confirm withdrawal button
         b1 = tk.Button(self.container, text="Confirm Withdrawal",
-                    command=lambda:[self.container.grid_forget(), self.SQLWithdraw(accessionNo, title, authors, isbn, publisher, year), BookWithdraw(self.root)],
+                    command=lambda:[self.container.grid_forget(), self.SQLWithdraw(accessionNo), BookWithdraw(self.root)],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         b1.config(font=(FONT, FONT_SIZE, STYLE))
         b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -297,8 +326,12 @@ class BookWithdrawSuccess(Container):
         home_btn.place(relx=0.7, rely=0.7, anchor="center")
             
     def SQLWithdraw(self, accessionNo, title, authors, isbn, publisher, year):
-        print("test")
-        #sql code to delete book
+        #deleting on sql
+        sql_statement3 = "DELETE FROM books WHERE 'accession_no' = '{}'".format(accessionNo)
+        cursor.execute(sql_statement3)
+
+        sql_statement4 = "DELETE from book_author WHERE 'book_accession' = '{}'".format(accessionNo)
+        cursor.execute(sql_statement4)
 
 
 root = tk.Tk()
