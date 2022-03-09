@@ -222,7 +222,6 @@ class Borrow(Container):
     def go_to_borrowedError(self):
         sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = '{}' AND ReturnedDate IS NULL".format(self.AN_entry.get())
         data_BookBorrowed = self.cursor.execute(sql_statement).fetchall()
-        print(data_BookBorrowed)
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Book currently on Loan until:\n" + str(data_BookBorrowed[0][2] + timedelta(days=14)), width = 40, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
@@ -405,29 +404,33 @@ class Return(Container):
         self.RD_label.lower()
         self.fine_label.lower()
         
-        #Outstanding fines error
+        #Update loan with return date
         sql_statement = "UPDATE loan SET ReturnedDate = '{}' WHERE BorrowedBookAccession = '{}'".format(date.today(), self.AN_entry.get())
         self.cursor.execute(sql_statement)
-        #Find memberid
-        sql_statement = "SELECT BorrowerID FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
-        data_ID = self.cursor.execute(sql_statement).fetchall()[0][0]
         #Find borrow date
         sql_statement = "SELECT BorrowDate FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
         data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
         data_DD = data_BD + timedelta(days=14)
-        if date.today() > data_DD:
-            fine_amt =  (date.today() - data_DD).days
-            sql_statement = "INSERT INTO fine(memberid, accession_no, amount) VALUES('{}', '{}', {})".format(data_ID, self.AN_entry.get(), fine_amt )
-            self.cursor.execute(sql_statement)
-        
-        sql_statement = "SELECT amount FROM fine WHERE accession_no = '{}'".format(self.AN_entry.get())
-        data_fine = self.cursor.execute(sql_statement).fetchall()
-        if len(data_fine) > 0:
+        fine_amt =  (date.today() - data_DD).days
+        if fine_amt > 0:
             self.go_to_fineError()
         
     def go_to_fineError(self):
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Book returned successfully but has fines.", 
         width = 40, height=15)
+        #Find memberid
+        sql_statement = "SELECT BorrowerID FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+        data_ID = self.cursor.execute(sql_statement).fetchall()[0][0]
+        sql_statement = "SELECT BorrowDate FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+        data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
+        data_DD = data_BD + timedelta(days=14)
+        fine_amt =  (date.today() - data_DD).days
+        sql_statement = "SELECT * FROM fine WHERE accession_no = '{}'".format(self.AN_entry.get())
+        data_ifgotfine = self.cursor.execute(sql_statement).fetchall()
+        if len(data_ifgotfine) == 0:
+            sql_statement = "INSERT INTO fine(memberid, accession_no, amount) VALUES('{}', '{}', {})".format(data_ID, self.AN_entry.get(), fine_amt )
+            self.cursor.execute(sql_statement)
+        
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
