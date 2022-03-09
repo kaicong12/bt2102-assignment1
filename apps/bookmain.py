@@ -37,7 +37,7 @@ class BookLandingPage(Container):
         #instructions
         instructions = tk.Label(self.container, text='Select one of the options below:', fg='black', bg='#c5e3e5',
                            relief='raised', width=60, height=3)
-        instructions.config(font=(FONT, FONT_SIZE, STYLE))
+        instructions.config(font=(FONT, FONT_SIZE, STYLE)) 
         instructions.place(relx=0.5, rely=0.09, anchor="center")
 
         #acquisition button
@@ -47,7 +47,7 @@ class BookLandingPage(Container):
         acquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
 
         #withdrawal button
-        withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookdraw(self.root)],
+        withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookdraw(self.root, self.parent, self.engine)],
                                    text="Book Withdrawal", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         withdraw_btn.config(font=(FONT, FONT_SIZE, STYLE))
         withdraw_btn.place(relx=0.7, rely=0.5, anchor='center')
@@ -58,11 +58,8 @@ class BookLandingPage(Container):
                                  bg='#c5e3e5', width=20, height=2, relief='raised',
                                  borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        home_btn.place(relx=0.7, rely=0.68, anchor="center") 
-
-    def return_to_main_menu(self):
-        print("a")
-
+        home_btn.place(relx=0.7, rely=0.68, anchor="center")
+        
 #Insertion
 class bookinsert(Container):
     def __init__(self, root, parent, engine):
@@ -214,11 +211,13 @@ class bookinsert(Container):
 #Withdrawal
 
 class bookdraw(Container):
-    def __init__(self, root):
+    def __init__(self, root, parent, engine):
         super().__init__(root, "Book withdrawal menu")
         self.init_image()
         self.engine = engine
-        self.cursor = engine.connect()
+        self.root = root
+        self.parent = parent
+        self.cursor = self.engine.connect()
         
         #Instructions
         self.instructions = tk.Label(self.container, text='To Remove Outdated Books From System, Please Enter Required Information Below:',

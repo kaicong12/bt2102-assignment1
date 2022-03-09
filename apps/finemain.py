@@ -25,7 +25,7 @@ class FineLandingPage(Container):
         instructions.place(relx=0.5, rely=0.09, anchor="center")
 
         #payment button
-        payment_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), FinePayment(root)],
+        payment_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), FinePayment(root, self.parent, self.engine)],
                                    text="Fine Payment", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         payment_btn.config(font=(FONT, FONT_SIZE, STYLE))
         payment_btn.place(relx=0.7, rely=0.4, anchor='center')
@@ -42,9 +42,11 @@ class FineLandingPage(Container):
 
 
 class FinePayment(Container):
-    def __init__(self, root):
+    def __init__(self, root, parent, engine):
         super().__init__(root, "Fine Payment Menu")
         self.init_image()
+        self.parent = parent
+        self.engine = engine
         self.cursor = self.engine.connect()
 
         #Instructions
@@ -73,8 +75,7 @@ class FinePayment(Container):
 
         self.e2 = tk.Entry(root)
         self.e2.insert(0, f"{self.Date:%B, %d, %Y}")
-        self.e2.pack()
-        self.e2.place(relx=0.6, rely=0.31)
+        self.e2.place(relx=0.6, rely=0.43)
         self.Date= self.e1.get()
         
 
@@ -91,28 +92,35 @@ class FinePayment(Container):
 
         #pay fine
         self.pay = tk.Button(self.container, text='Pay Fine',
-                        command=lambda:[self.container.grid_forget(), self.FinePayment()],
+                        command=lambda:[self.ClosePayPopup(), self.FinePay()],
                         bg='#c5e3e5', width=30, height=1,
                              relief='raised', borderwidth=5)
         self.pay.config(font=(FONT, FONT_SIZE, STYLE))
         self.pay.place(relx=0.3, rely=0.64, anchor="center") 
 
         #home
-        self.home_btn = tk.Button(root, text='Back to Fines Menu',
+        self.home2_btn = tk.Button(root, text='Back to Fines Menu',
                              command=lambda:[self.container.grid_forget(), FineLandingPage(self.root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
-        self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        self.home_btn.place(relx=0.7, rely=0.84, anchor="center")
+        self.home2_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        self.home2_btn.place(relx=0.7, rely=0.84, anchor="center")
 
         root.mainloop()
 
-    def FinePayment(self):
+    def FinePay(self):
         #confirmation text box
         self.confirm = tk.Label(self.container,
                     text='Please Confirm Details to Be Correct\n\nPayment due: {}\n(Exact Fee only)\nMember ID: {}\nPayment Date: {}'.format(self.MemberID, self.Date, self.PaymentAmt),
                            fg='black', bg='#00FF00', relief='raised', width=60, height=9)
         self.confirm.config(font=(FONT, FONT_SIZE, STYLE))
         self.confirm.place(relx=0.5, rely=0.4, anchor="center")
+
+        #back to fine button
+        self.return_btn = tk.Button(self.container, text="Back to Payment Function",
+                    command=lambda:[self.CloseConfirmPage(), FinePayment(self.root, self.parent, self.engine)],
+                                     bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
+        self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        self.return_btn.place(relx=0.7, rely=0.7, anchor="center")
 
         #sql code there to check if member has fine/ whether payment amount correct/ success
         sql_statement = "SELECT * FROM Fine WHERE memberid = '{}'".format(self.MemberID)
@@ -126,18 +134,11 @@ class FinePayment(Container):
                 return self.failedincorrectamt()
         else:
             return self.failednofine()
-
-        #back to fine button
-        self.return_btn = tk.Button(self.container, text="Back to Payment Function",
-                    command=lambda:[self.container.grid_forget(), FinePayment(self.root)],
-                                     bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
-        self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        self.return_btn.place(relx=0.7, rely=0.7, anchor="center")
         
     #member has fine and correct amount 
     def success(self, master, MembershipID, PaymentDate, PaymentAmount):
         self.b1 = tk.Button(self.container, text="Confirm Payment",
-                    command=lambda:[self.CloseConfirmPage(), self.SQLPay(), FinePayment(self.root)],
+                    command=lambda:[self.CloseConfirmPage(), self.SQLPay(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.b1.config(font=(FONT, FONT_SIZE, STYLE))
         self.b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -145,7 +146,7 @@ class FinePayment(Container):
     #member has no fine
     def failednofine(self):
         self.b1 = tk.Button(self.container, text="Confirm Payment",
-                    command=lambda:[self.CloseConfirmPage(), self.nofine(self.root)],
+                    command=lambda:[self.CloseConfirmPage(), self.nofine()],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.b1.config(font=(FONT, FONT_SIZE, STYLE))
         self.b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -153,7 +154,7 @@ class FinePayment(Container):
     #incorrect fine amount
     def failedincorrectamt(self):
         self.b1 = tk.Button(self.container, text="Confirm Payment",
-                    command=lambda:[self.CloseConfirmPage(), self.incorrectamt(self.root)],
+                    command=lambda:[self.CloseConfirmPage(), self.incorrectamt()],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.b1.config(font=(FONT, FONT_SIZE, STYLE))
         self.b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -164,7 +165,6 @@ class FinePayment(Container):
         sql_statement3 = "DELETE FROM Fine WHERE 'memberid' = '{}'".format(self.MemberID)
         self.cursor.execute(sql_statement3)
 
-        
 
         sql_statement4 = "INSERT INTO Payment VALUES (%s, %s, %s)"
         self.cursor.execute(sql_statement4, (self.MemberID, accessionNo, self.Date))
@@ -176,7 +176,7 @@ class FinePayment(Container):
         self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to payment button
-        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage, self.FinePayment()],
+        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -188,7 +188,7 @@ class FinePayment(Container):
         self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
          #back to payment button
-        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage, self.FinePayment()],
+        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -201,7 +201,20 @@ class FinePayment(Container):
     #close Confirmation Page
     def CloseConfirmPage(self):
         self.confirm.lower()
+        
         self.return_btn.lower()
         self.b1.lower()
+
+    def ClosePayPopup(self):
+        self.instructions.lower()
+        self.membership.lower()
+        self.e1.lower()
+        self.PaymentDate.lower()
+        self.e2.lower()
+        self.PaymentAmount.lower()
+        self.e3.lower()
+        self.pay.lower()
+        self.home2_btn.lower()
+        
         
 

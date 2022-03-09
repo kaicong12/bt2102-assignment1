@@ -29,7 +29,7 @@ class testestest(Container):
 
         self.root = Tk()
 
-        self.landing = BookLandingPage(self.root,self, engine)
+        self.landing = FineLandingPage(self.root,self, engine)
 
         self.root.mainloop()
 
