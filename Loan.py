@@ -200,7 +200,7 @@ class Borrow(Container):
         
         for x in range(1):
             #Book out on loan error
-            sql_statement = "SELECT BorrowedBookAccession FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+            sql_statement = "SELECT BorrowedBookAccession FROM loan WHERE BorrowedBookAccession = '{}' AND ReturnedDate IS NULL".format(self.AN_entry.get())
             data_BookBorrowed = self.cursor.execute(sql_statement).fetchall()
             if len(data_BookBorrowed) > 0:
                 self.go_to_borrowedError()
@@ -222,6 +222,7 @@ class Borrow(Container):
     def go_to_borrowedError(self):
         sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = '{}' AND ReturnedDate IS NULL".format(self.AN_entry.get())
         data_BookBorrowed = self.cursor.execute(sql_statement).fetchall()
+        print(data_BookBorrowed)
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Book currently on Loan until:\n" + str(data_BookBorrowed[0][2] + timedelta(days=14)), width = 40, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
@@ -435,7 +436,7 @@ class Return(Container):
     def closeError(self):
         self.popupErrorLabel.lower()
         self.backBorrowButton.lower()
-        print("Hi")
+        
         
     
     def go_to_loans(self):
