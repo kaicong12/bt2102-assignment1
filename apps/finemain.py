@@ -4,23 +4,16 @@ import pandas as pd
 from apps.resources.variables import *
 from apps.resources.container import Container
 
-#USER = 'root'
-#PASSWORD = 'joansoh17'
-#HOST = '127.0.0.1'
-#PORT = 3306
-#DATABASE = 'Library'
+USER = 'root'
+PASSWORD = 'joansoh17'
+HOST = '127.0.0.1'
+PORT = 3306
+DATABASE = 'Library'
 
-#engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
+engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
             #USER, PASSWORD, HOST, PORT, DATABASE))
 
-#sql_statement = """SELECT FROM Fines"""
-
-#table_df = pd.read_sql(
-#    sql_statement,
-#    con=engine
-#)
-#table_df
-
+sql_statement = """SELECT FROM Fines"""
 
 class FineLandingPage(Container):
     def __init__(self, root):
@@ -124,10 +117,18 @@ class FinePaymentSuccess(Container):
         confirm.config(font=(FONT, FONT_SIZE, STYLE))
         confirm.place(relx=0.5, rely=0.4, anchor="center")
 
-
-        #insert sql code there to check if member has fine/ whether payment amount correct/ success
-        #determines which function is run in confirm withdrawalbutton
-        self.failednofine(self.root)
+        #sql code there to check if member has fine/ whether payment amount correct/ success
+        sql_statement = "SELECT * FROM Fine WHERE memberid = '{}'".format(MemberID)
+        data_fine = self.cursor.execute(sql_statement).fetchall()
+        if len(data_fine) > 0: #whether member has fine
+            sql_statement2 = "SELECT amount FROM Fine WHERE memberid = '{}'".format(MemberID)
+            data_amt = self.cursor.execute(sql_statement2).fetchall()
+            if data_amt == PaymentAmount: #whether payment amount correct
+                return self.success(self.root, MemberID, PaymentDate, PaymentAmount)
+            else:
+                return self.failedincorrectamt(self.root)
+        else:
+            return self.failednofine(self.root)
 
         #back to fine button
         home_btn = tk.Button(self.container, text="Back to Payment Function",
@@ -163,7 +164,8 @@ class FinePaymentSuccess(Container):
         
     #SQL queries to delete fine
     def SQLPay(self, master, MembershipID, PaymentDate, PaymentAmount):
-        return "test"
+        sql_statement3 = "DELETE FROM Fine WHERE 'memberid' = '{}'".format(MembershipID)
+        cursor.execute(sql_statement3)
 
     def nofine(self, master):
         instructions = tk.Label(self.container, text='Error! Member has no fine.', fg='black', bg='#FF0000',
