@@ -1,8 +1,5 @@
-
-
 from textwrap import wrap
-from tkinter import Label, Button, Entry, Tk, ttk, Canvas, Frame
-from tkinter.font import BOLD, Font
+from tkinter import *
 from PIL import Image, ImageTk
 from numpy import insert
 from sqlalchemy import null, text, create_engine
@@ -17,8 +14,8 @@ class Reservation(Container):
         self.parent = parent
         self.engine = engine
         
-        # reports image
-        self.reservation = self.open_image('apps/resources/reports.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
+        # reservations image
+        self.reservation = self.open_image('apps/resources/reservation.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
         # reinitialize because tkinter would destroy self.report variable after using it
         self.reservation_image  = Label(self.container, image=self.reservation)
         self.reservation_image .place(relx=SIDE_IMAGE_X, rely=SIDE_IMAGE_Y, anchor='center')
@@ -114,6 +111,7 @@ class Reserve(Container):
             self.RD_box.config(font=(FONT, FONT_SIZE, STYLE))
             self.RD_box.place(relx=MENU_LABEL_X, rely=0.8, anchor='center')
             self.RD_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
+            self.RD_entry.insert(0, (date.today()))
             self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
         
@@ -123,32 +121,40 @@ class Reserve(Container):
     def go_to_confirm(self):
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Reservation Details To \nBe Correct", 
-            width = 30, height=20, font=("Arial", 16, BOLD), anchor='n')
+            width = 30, height=20, font=(FONT), anchor='n')
             self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
             #AN Label
-            self.label_AN = Label(self.container, text=self.AN_entry.get(), 
-            width = 5, height=3, anchor='n')
-            self.label_AN.place(relx=0.5, rely=0.3, anchor="center")
+            self.input_AN = Label(self.container, text=self.AN_entry.get())
+            self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
             #Book title Label
             sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
             data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_booktitle = Label(self.container, text=data_BT, 
-            width = 20, height=3, anchor='n')
-            self.label_booktitle.place(relx=0.5, rely=0.35, anchor="center")
+            self.input_BT = Label(self.container, text=data_BT) 
+            self.input_BT.place(relx=0.6, rely=0.35, anchor="center")
             #Membership ID Label
-            self.label_ID = Label(self.container, text=self.ID_entry.get(), 
-            width = 20, height=5, anchor='n')
-            self.label_ID.place(relx=0.5, rely=0.4, anchor="center")
+            self.input_ID = Label(self.container, text=self.ID_entry.get())
+            self.input_ID.place(relx=0.6, rely=0.4, anchor="center")
             #Member name Label
             sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get())
             data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_name = Label(self.container, text=data_name, 
-            width = 20, height=5, anchor='n')
-            self.label_name.place(relx=0.5, rely=0.45, anchor="center")
+            self.input_name = Label(self.container, text=data_name) 
+            self.input_name.place(relx=0.6, rely=0.45, anchor="center")
             #Reserve date Label
-            self.label_RD = Label(self.container, text=self.RD_entry.get(), 
-            width = 20, height=5, anchor='n')
-            self.label_RD.place(relx=0.5, rely=0.5, anchor="center")
+            self.input_RD = Label(self.container, text=self.RD_entry.get())
+            self.input_RD.place(relx=0.6, rely=0.5, anchor="center")
+            #Labels
+            self.AN_label = Label(self.container, text = "Accession Number:")
+            self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
+            self.BT_label = Label(self.container, text = "Book Title:")
+            self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
+            self.ID_label = Label(self.container, text = "Membership ID:")
+            self.ID_label.place(relx=0.4, rely=0.4, anchor="center")
+            self.name_label = Label(self.container, text = "Member Name:")
+            self.name_label.place(relx=0.4, rely=0.45, anchor="center")
+            self.RD_label = Label(self.container, text = "Reserve Date")
+            self.RD_label.place(relx=0.4, rely=0.5, anchor="center")
+            
+            
             #Confirm Reservation Button
             self.confirmReservationButton = Button(self.container, text="Confirm Reservation", padx=20, pady=20, 
             command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -162,15 +168,23 @@ class Reserve(Container):
             
            
     def close_confirmPage(self):
+        self.cursor = self.engine.connect()
         #Close confirmation page popup
         self.popupPromptLabel.lower()
         self.confirmReservationButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_RD.lower()
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_RD.lower()
+        
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.RD_label.lower()
+        
     
     def go_to_error(self):
         self.cursor = self.engine.connect()
@@ -178,11 +192,17 @@ class Reserve(Container):
         self.popupPromptLabel.lower()
         self.confirmReservationButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_RD.lower()
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_RD.lower()
+        
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.RD_label.lower()
         
         for x in range(1):
             #Reservation quota error
@@ -282,6 +302,7 @@ class Cancel(Container):
             self.CD_box.config(font=(FONT, FONT_SIZE, STYLE))
             self.CD_box.place(relx=MENU_LABEL_X, rely=0.8, anchor='center')
             self.CD_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
+            self.CD_entry.insert(0, (date.today()))
             self.CD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
         
@@ -290,32 +311,39 @@ class Cancel(Container):
     def go_to_confirm(self):
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Cancellation Details To \nBe Correct", 
-            width = 30, height=20, font=("Arial", 16, BOLD), anchor='n')
+            width = 30, height=20, font=(FONT), anchor='n')
             self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
             #AN Label
-            self.label_AN = Label(self.container, text=self.AN_entry.get(), 
-            width = 5, height=3, anchor='n')
-            self.label_AN.place(relx=0.5, rely=0.3, anchor="center")
+            self.input_AN = Label(self.container, text=self.AN_entry.get())
+            self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
             #Book title Label
             sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
             data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_booktitle = Label(self.container, text=data_BT, 
-            width = 20, height=3, anchor='n')
-            self.label_booktitle.place(relx=0.5, rely=0.35, anchor="center")
+            self.input_BT = Label(self.container, text=data_BT) 
+            self.input_BT.place(relx=0.6, rely=0.35, anchor="center")
             #Membership ID Label
-            self.label_ID = Label(self.container, text=self.ID_entry.get(), 
-            width = 20, height=5, anchor='n')
-            self.label_ID.place(relx=0.5, rely=0.4, anchor="center")
+            self.input_ID = Label(self.container, text=self.ID_entry.get())
+            self.input_ID.place(relx=0.6, rely=0.4, anchor="center")
             #Member name Label
             sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get())
             data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_name = Label(self.container, text=data_name, 
-            width = 20, height=5, anchor='n')
-            self.label_name.place(relx=0.5, rely=0.45, anchor="center")
-            #Cancellation date Label
-            self.label_CD = Label(self.container, text=self.CD_entry.get(), 
-            width = 20, height=5, anchor='n')
-            self.label_CD.place(relx=0.5, rely=0.5, anchor="center")
+            self.input_name = Label(self.container, text=data_name) 
+            self.input_name.place(relx=0.6, rely=0.45, anchor="center")
+            #Cancel date Label
+            self.input_CD = Label(self.container, text=self.CD_entry.get())
+            self.input_CD.place(relx=0.6, rely=0.5, anchor="center")
+            #Labels
+            self.AN_label = Label(self.container, text = "Accession Number:")
+            self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
+            self.BT_label = Label(self.container, text = "Book Title:")
+            self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
+            self.ID_label = Label(self.container, text = "Membership ID:")
+            self.ID_label.place(relx=0.4, rely=0.4, anchor="center")
+            self.name_label = Label(self.container, text = "Member Name:")
+            self.name_label.place(relx=0.4, rely=0.45, anchor="center")
+            self.CD_label = Label(self.container, text = "Cancellation Date")
+            self.CD_label.place(relx=0.4, rely=0.5, anchor="center")
+            
             #Confirm Cancellation Button
             self.confirmCancellationButton = Button(self.container, text="Confirm Cancellation", padx=20, pady=20, 
             command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -328,15 +356,22 @@ class Cancel(Container):
             
            
     def close_confirmPage(self):
+        self.cursor = self.engine.connect()
         #Close confirmation page popup
         self.popupPromptLabel.lower()
         self.confirmCancellationButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_CD.lower()
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_CD.lower()
+        
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.CD_label.lower()
     
     def go_to_error(self):
         self.cursor = self.engine.connect()
@@ -344,11 +379,17 @@ class Cancel(Container):
         self.popupPromptLabel.lower()
         self.confirmCancellationButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_CD.lower()
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_CD.lower()
+        
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.CD_label.lower()
         #Member has no such reservation
         sql_statement = "Select * FROM reservation WHERE ReservedBookAccession = '{}' AND ReserverID = '{}'".format(self.AN_entry.get(), self.ID_entry.get())
         data_reservations = self.cursor.execute(sql_statement).fetchall()

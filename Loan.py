@@ -1,9 +1,5 @@
-
-
 from textwrap import wrap
-from tkinter import Label, Button, Entry, Tk, ttk, Canvas, Frame
-from tkinter.font import BOLD, Font
-
+from tkinter import *
 from PIL import Image, ImageTk
 from numpy import insert
 from sqlalchemy import null, text, create_engine
@@ -18,14 +14,14 @@ class Loan(Container):
         self.parent = parent
         self.engine = engine
         
-        # reports image
-        self.loan = self.open_image('apps/resources/reports.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
+        # loan image
+        self.loan = self.open_image('apps/resources/loan.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
         # reinitialize because tkinter would destroy self.report variable after using it
         self.loan_image  = Label(self.container, image=self.loan)
-        self.loan_image .place(relx=SIDE_IMAGE_X, rely=SIDE_IMAGE_Y, anchor='center')
+        self.loan_image.place(relx=SIDE_IMAGE_X, rely=SIDE_IMAGE_Y, anchor='center')
         self.loan_text = Label(self.container, text='Loans', font=(FONT, FONT_SIZE, STYLE), fg='white', bg='black')
         self.loan_text.place(relx=SIDE_TEXT_X, rely=SIDE_TEXT_Y, anchor='center')
-        
+
         # title label
         self.label = Label(self.container, text='Select one of the options below:', fg='black', bg='#c5e3e5',
                            relief='raised', width=60, height=3)
@@ -115,36 +111,43 @@ class Borrow(Container):
     def go_to_confirm(self):
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Loan Details To \nBe Correct", 
-            width = 30, height=20, font=("Arial", 16, BOLD), anchor='n')
+            width = 30, height=20, font=(FONT), anchor='n')
             self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
-            #AN Label
-            self.label_AN = Label(self.container, text=self.AN_entry.get(), 
-            width = 5, height=3, anchor='n')
-            self.label_AN.place(relx=0.5, rely=0.3, anchor="center")
-            #Book title Label
+            #AN Entry
+            self.input_AN = Label(self.container, text=self.AN_entry.get())
+            self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
+            #Book title Entry
             sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
             data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_booktitle = Label(self.container, text=data_BT, 
-            width = 20, height=3, anchor='n')
-            self.label_booktitle.place(relx=0.5, rely=0.35, anchor="center")
-            #Borrow date Label
-            self.label_BD = Label(self.container, text=date.today(), 
-            width = 20, height=5, anchor='n')
-            self.label_BD.place(relx=0.5, rely=0.4, anchor="center")
-            #Membership ID Label
-            self.label_ID = Label(self.container, text=self.ID_entry.get(), 
-            width = 20, height=5, anchor='n')
-            self.label_ID.place(relx=0.5, rely=0.45, anchor="center")
-            #Member name Label
+            self.input_BT = Label(self.container, text=data_BT) 
+            self.input_BT   .place(relx=0.6, rely=0.35, anchor="center")
+            #Borrow date Entry
+            self.input_BD = Label(self.container, text=date.today()) 
+            self.input_BD.place(relx=0.6, rely=0.4, anchor="center")
+            #Membership ID Entry
+            self.input_ID = Label(self.container, text=self.ID_entry.get())
+            self.input_ID.place(relx=0.6, rely=0.45, anchor="center")
+            #Member name Entry
             sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get())
             data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_name = Label(self.container, text=data_name, 
-            width = 20, height=5, anchor='n')
-            self.label_name.place(relx=0.5, rely=0.5, anchor="center")
-            #Due Date Label
-            self.label_DD = Label(self.container, text=date.today() + timedelta(days=14), 
-            width = 20, height=3, anchor='n')
-            self.label_DD.place(relx=0.5, rely=0.55, anchor="center")
+            self.input_name = Label(self.container, text=data_name)
+            self.input_name.place(relx=0.6, rely=0.5, anchor="center")
+            #Due Date Entry
+            self.input_DD = Label(self.container, text=date.today() + timedelta(days=14))
+            self.input_DD.place(relx=0.6, rely=0.55, anchor="center")
+            #Labels
+            self.AN_label = Label(self.container, text = "Accession Number:")
+            self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
+            self.BT_label = Label(self.container, text = "Book Title:")
+            self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
+            self.BD_label = Label(self.container, text = "Borrow Date:")
+            self.BD_label.place(relx=0.4, rely=0.4, anchor="center")
+            self.ID_label = Label(self.container, text = "Membership ID:")
+            self.ID_label.place(relx=0.4, rely=0.45, anchor="center")
+            self.name_label = Label(self.container, text = "Member Name:")
+            self.name_label.place(relx=0.4, rely=0.5, anchor="center")
+            self.DD_label = Label(self.container, text = "Due Date:")
+            self.DD_label.place(relx=0.4, rely=0.55, anchor="center")
             #Confirm Loan Button
             self.confirmLoanButton = Button(self.container, text="Confirm Loan", padx=20, pady=20, 
             command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -158,16 +161,23 @@ class Borrow(Container):
             
            
     def close_confirmPage(self):
+        self.cursor = self.engine.connect()
         #Close confirmation page popup
         self.popupPromptLabel.lower()
         self.confirmLoanButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_BD.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_DD.lower()
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_BD.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_DD.lower()
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.BD_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.DD_label.lower()
     
     def go_to_error(self):
         self.cursor = self.engine.connect()
@@ -175,28 +185,34 @@ class Borrow(Container):
         self.popupPromptLabel.lower()
         self.confirmLoanButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_BD.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_DD.lower()
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_BD.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_DD.lower()
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.BD_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.DD_label.lower()
         
         for x in range(1):
             #Book out on loan error
-            sql_statement = "Select BorrowedBookAccession FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+            sql_statement = "SELECT BorrowedBookAccession FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
             data_BookBorrowed = self.cursor.execute(sql_statement).fetchall()
             if len(data_BookBorrowed) > 0:
                 self.go_to_borrowedError()
                 break
             #Loan quota error
-            sql_statement = "Select * FROM loan WHERE BorrowerID = '{}'".format(self.ID_entry.get())
+            sql_statement = "SELECT * FROM loan WHERE BorrowerID = '{}' AND ReturnedDate IS NULL".format(self.ID_entry.get())
             data_quota = self.cursor.execute(sql_statement).fetchall()
             if len(data_quota) >= 2:
                 self.go_to_quotaError()
                 break
             #Outstanding fine error
-            sql_statement = "Select memberid FROM fine WHERE memberid = '{}'".format(self.ID_entry.get())
+            sql_statement = "SELECT memberid FROM fine WHERE memberid = '{}'".format(self.ID_entry.get())
             data_fine = self.cursor.execute(sql_statement).fetchall()
             if len(data_fine) > 0:
                 self.go_to_fineError()
@@ -204,11 +220,10 @@ class Borrow(Container):
             sql_statement = "INSERT INTO loan(BorrowerID, BorrowedBookAccession, BorrowDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), date.today())
             self.cursor.execute(sql_statement)       
     def go_to_borrowedError(self):
-        sql_statement = "Select * FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+        sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = '{}' AND ReturnedDate IS NULL".format(self.AN_entry.get())
         data_BookBorrowed = self.cursor.execute(sql_statement).fetchall()
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Book currently on Loan until:\n" + str(data_BookBorrowed[0][2] + timedelta(days=14)), width = 40, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
-        print("hey")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
         self.backBorrowButton.place(relx=0.5, rely=0.65, anchor="center")
@@ -232,7 +247,7 @@ class Borrow(Container):
     def closeError(self):
         self.popupErrorLabel.lower()
         self.backBorrowButton.lower()
-        print("Hi")
+        
         
     
     def go_to_loans(self):
@@ -280,6 +295,7 @@ class Return(Container):
             self.RD_box.config(font=(FONT, FONT_SIZE, STYLE))
             self.RD_box.place(relx=MENU_LABEL_X, rely=0.5, anchor='center')
             self.RD_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
+            self.RD_entry.insert(0, (date.today()))
             self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.5, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
         
@@ -288,66 +304,85 @@ class Return(Container):
     def go_to_confirm(self):
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Return Details To \nBe Correct", 
-            width = 30, height=20, font=("Arial", 16, BOLD), anchor='n')
+            width = 30, height=20, font=(FONT), anchor='n')
             self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
-            #AN Label
-            self.label_AN = Label(self.container, text=self.AN_entry.get(), 
-            width = 5, height=3, anchor='n')
-            self.label_AN.place(relx=0.5, rely=0.3, anchor="center")
-            #Book title Label
+            #AN Entry
+            self.input_AN = Label(self.container, text=self.AN_entry.get())
+            self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
+            #Book title Entry
             sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
             data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_booktitle = Label(self.container, text=data_BT, 
-            width = 20, height=3, anchor='n')
-            self.label_booktitle.place(relx=0.5, rely=0.35, anchor="center")
-            
-            #Membership ID Label
+            self.input_BT = Label(self.container, text=data_BT) 
+            self.input_BT   .place(relx=0.6, rely=0.35, anchor="center")
+            #Membership ID Entry
             sql_statement = "SELECT BorrowerID FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
             data_ID = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_ID = Label(self.container, text=data_ID, 
-            width = 20, height=3, anchor='n')
-            self.label_ID.place(relx=0.5, rely=0.4, anchor="center")
-            #Member name Label
+            self.input_ID = Label(self.container, text=data_ID) 
+            self.input_ID.place(relx=0.6, rely=0.4, anchor="center")
+            #Member name Entry
             sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(data_ID)
             data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.label_name = Label(self.container, text=data_name, 
-            width = 20, height=5, anchor='n')
-            self.label_name.place(relx=0.5, rely=0.45, anchor="center")
+            self.input_name = Label(self.container, text=data_name)
+            self.input_name.place(relx=0.6, rely=0.45, anchor="center")
             #RD Label
-            self.label_RD = Label(self.container, text=self.RD_entry.get(), 
-            width = 10, height=3, anchor='n')
-            self.label_RD.place(relx=0.5, rely=0.5, anchor="center")
+            self.input_RD = Label(self.container, text=self.RD_entry.get())
+            self.input_RD.place(relx=0.6, rely=0.5, anchor="center")
             #Fine Label
-            sql_statement = "SELECT amount FROM fine WHERE accession_no = '{}'".format(self.AN_entry.get())
-            data_fine = self.cursor.execute(sql_statement).fetchall()[0][0]
+            sql_statement = "SELECT BorrowDate FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+            data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
+            data_DD = data_BD + timedelta(days=14)
+            if date.today() > data_DD:
+                fine_amt =  (date.today() - data_DD).days
+            else:
+                fine_amt = 0 
             
-            self.label_fine = Label(self.container, text="$" + str(data_fine), 
-            width = 20, height=3, anchor='n')
-            self.label_fine.place(relx=0.5, rely=0.55, anchor="center")
-          
+            self.input_fine = Label(self.container, text="$" + str(fine_amt))
+            self.input_fine.place(relx=0.6, rely=0.55, anchor="center")
+            #Labels
+            self.AN_label = Label(self.container, text = "Accession Number:")
+            self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
+            self.BT_label = Label(self.container, text = "Book Title:")
+            self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
+            self.ID_label = Label(self.container, text = "Membership ID:")
+            self.ID_label.place(relx=0.4, rely=0.4, anchor="center")
+            self.name_label = Label(self.container, text = "Member Name:")
+            self.name_label.place(relx=0.4, rely=0.45, anchor="center")
+            self.RD_label = Label(self.container, text = "Return Date")
+            self.RD_label.place(relx=0.4, rely=0.5, anchor="center")
+            self.fine_label = Label(self.container, text = "Fine:")
+            self.fine_label.place(relx=0.4, rely=0.55, anchor="center")
             #Confirm Return Button
             self.confirmReturnButton = Button(self.container, text="Confirm Return", padx=20, pady=20, 
             command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
             self.confirmReturnButton.place(relx=0.4, rely=0.65, anchor="center")
-            #Back to return function button
-            self.backBorrowButton = Button(self.container, text="Back to Return Function", padx=20, pady=20, 
+             #Back to borrow function button
+            self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
              bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
             self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
             
             
             
+            
            
     def close_confirmPage(self):
+        self.cursor = self.engine.connect()
         #Close confirmation page popup
         self.popupPromptLabel.lower()
         self.confirmReturnButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_fine.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_RD.lower()
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_RD.lower()
+        self.input_fine.lower()
+        
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.RD_label.lower()
+        self.fine_label.lower()
     
     def go_to_error(self):
         self.cursor = self.engine.connect()
@@ -355,23 +390,40 @@ class Return(Container):
         self.popupPromptLabel.lower()
         self.confirmReturnButton.lower()
         self.backBorrowButton.lower()
-        self.label_AN.lower()
-        self.label_booktitle.lower()
-        self.label_fine.lower()
-        self.label_ID.lower()   
-        self.label_name.lower()
-        self.label_RD.lower()
-
+        self.input_AN.lower()
+        self.input_BT.lower()
+        self.input_ID.lower()   
+        self.input_name.lower()
+        self.input_RD.lower()
+        self.input_fine.lower()
+        
+        self.AN_label.lower()
+        self.BT_label.lower()
+        self.ID_label.lower()
+        self.name_label.lower()
+        self.RD_label.lower()
+        self.fine_label.lower()
+        
         #Outstanding fines error
         sql_statement = "UPDATE loan SET ReturnedDate = '{}' WHERE BorrowedBookAccession = '{}'".format(date.today(), self.AN_entry.get())
         self.cursor.execute(sql_statement)
+        #Find memberid
+        sql_statement = "SELECT BorrowerID FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+        data_ID = self.cursor.execute(sql_statement).fetchall()[0][0]
+        #Find borrow date
+        sql_statement = "SELECT BorrowDate FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
+        data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
+        data_DD = data_BD + timedelta(days=14)
+        if date.today() > data_DD:
+            fine_amt =  (date.today() - data_DD).days
+            sql_statement = "INSERT INTO fine(memberid, accession_no, amount) VALUES('{}', '{}', {})".format(data_ID, self.AN_entry.get(), fine_amt )
+            self.cursor.execute(sql_statement)
+        
         sql_statement = "SELECT amount FROM fine WHERE accession_no = '{}'".format(self.AN_entry.get())
         data_fine = self.cursor.execute(sql_statement).fetchall()
         if len(data_fine) > 0:
             self.go_to_fineError()
         
-        print("hi")
-
     def go_to_fineError(self):
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Book returned successfully but has fines.", 
         width = 40, height=15)
