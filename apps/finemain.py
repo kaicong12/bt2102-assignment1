@@ -5,21 +5,13 @@ from apps.resources.variables import *
 from apps.resources.container import Container
 import datetime as dt
 
-USER = 'root'
-PASSWORD = 'joansoh17'
-HOST = '127.0.0.1'
-PORT = 3306
-DATABASE = 'Library'
-
-engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
-            USER, PASSWORD, HOST, PORT, DATABASE))
-
-sql_statement = """SELECT FROM Fines"""
 
 class FineLandingPage(Container):
-    def __init__(self, root):
+    def __init__(self, root, parent, engine):
         super().__init__(root, "Fine Menu")
         self.init_image()
+        self.parent = parent
+        self.engine = engine
 
         #book image
         self.book = self.open_image('apps/resources/fine.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
@@ -40,6 +32,7 @@ class FineLandingPage(Container):
 
         #main menu button
         home_btn = tk.Button(self.container, text='Back to Main Menu',
+                                 command=parent.return_to_main_menu(self),
                                  bg='#c5e3e5', width=20, height=2, relief='raised',
                                  borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -52,7 +45,7 @@ class FinePayment(Container):
     def __init__(self, root):
         super().__init__(root, "Fine Payment Menu")
         self.init_image()
-        self.cursor = engine.connect()
+        self.cursor = self.engine.connect()
 
         #Instructions
         self.instructions = tk.Label(self.container, text='To Pay a Fine, Please Enter Information Below:',
@@ -78,10 +71,11 @@ class FinePayment(Container):
 
         self.Date = dt.datetime.now()
 
-        self.TodayDate = tk.Label(self.container, text =f"{self.Date:%B, %d, %Y}", fg='black', bg='white',
-                             width=23, height=2)
-        self.TodayDate.config(font=(FONT, 15, STYLE))
-        self.TodayDate.place(relx=0.64, rely=0.35, anchor="center")
+        self.e2 = tk.Entry(root)
+        self.e2.insert(0, f"{self.Date:%B, %d, %Y}")
+        self.e2.pack()
+        self.e2.place(relx=0.6, rely=0.31)
+        self.Date= self.e1.get()
         
 
         #payment amount
@@ -105,7 +99,7 @@ class FinePayment(Container):
 
         #home
         self.home_btn = tk.Button(root, text='Back to Fines Menu',
-                             command=lambda:[self.container.grid_forget(), FineLandingPage(root)],
+                             command=lambda:[self.container.grid_forget(), FineLandingPage(self.root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home_btn.place(relx=0.7, rely=0.84, anchor="center")
@@ -126,7 +120,7 @@ class FinePayment(Container):
         if len(data_fine) > 0: #whether member has fine
             sql_statement2 = "SELECT amount FROM Fine WHERE memberid = '{}'".format(self.MemberID)
             data_amt = self.cursor.execute(sql_statement2).fetchall()
-            if data_amt == PaymentAmount: #whether payment amount correct
+            if data_amt == self.PaymentAmnt: #whether payment amount correct
                 return self.success()
             else:
                 return self.failedincorrectamt()
@@ -210,9 +204,4 @@ class FinePayment(Container):
         self.return_btn.lower()
         self.b1.lower()
         
-
-
-root = tk.Tk()
-fine_landing_page = FineLandingPage(root)
-root.mainloop()
 

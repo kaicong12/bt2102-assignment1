@@ -18,11 +18,12 @@ cursor = engine.connect()
 
 
 class BookLandingPage(Container):
-    def __init__(self, root):
+    def __init__(self, root, parent, engine):
         super().__init__(root, "Book Menu")
         self.init_image()
         self.engine = engine
-        self.cursor = engine.connect()
+        self.parent = parent
+        self.cursor = self.engine.connect()
         self.root = root
 
 
@@ -40,10 +41,10 @@ class BookLandingPage(Container):
         instructions.place(relx=0.5, rely=0.09, anchor="center")
 
         #acquisition button
-        aquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookinsert(self.root)],
+        acquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookinsert(self.root, self.parent, self.engine)],
                                    text="Book Acquisition", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
-        aquisition_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        aquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
+        acquisition_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        acquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
 
         #withdrawal button
         withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookdraw(self.root)],
@@ -53,6 +54,7 @@ class BookLandingPage(Container):
         
         #main menu button
         home_btn = tk.Button(self.container, text='Back to Main Menu',
+                                 command=parent.return_to_main_menu(self),
                                  bg='#c5e3e5', width=20, height=2, relief='raised',
                                  borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -63,12 +65,13 @@ class BookLandingPage(Container):
 
 #Insertion
 class bookinsert(Container):
-    def __init__(self, root):
+    def __init__(self, root, parent, engine):
         super().__init__(root, "Book aquisition menu")
         self.init_image()
         self.engine = engine
         self.root = root
-        self.cursor = engine.connect()
+        self.parent = parent
+        self.cursor = self.engine.connect()
 
         #Instructions
         self.instructions = tk.Label(self.container, text='For New Book Acquisition, Please Enter Required Information Below:', fg='black', bg='#c5e3e5',
@@ -140,7 +143,7 @@ class bookinsert(Container):
         self.add.place(relx=0.3, rely=0.70, anchor="center") 
 
         #home
-        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(self.root)],
+        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(self.root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home_btn.place(relx=0.7, rely=0.82, anchor="center")
@@ -362,8 +365,4 @@ class bookdraw(Container):
         self.Confirm.lower()
         self.b1.lower()
         self.return_btn.lower()
-        
-
-root = tk.Tk()
-book_landing_page = BookLandingPage(root)
-root.mainloop()
+    
