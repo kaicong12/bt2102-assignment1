@@ -13,7 +13,6 @@ class BookLandingPage(Container):
         self.cursor = self.engine.connect()
         self.root = root
 
-
         #book image
         self.book = self.open_image('apps/resources/book.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
         self.book_image  = tk.Label(self.container, image=self.book)
@@ -28,13 +27,13 @@ class BookLandingPage(Container):
         instructions.place(relx=0.5, rely=0.09, anchor="center")
 
         #acquisition button
-        aquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookinsert(self.root, self.parent, self.engine)],
+        aquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget, bookinsert(self.root, self.parent, self.engine)],
                                    text="Book Acquisition", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         aquisition_btn.config(font=(FONT, FONT_SIZE, STYLE))
         aquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
 
         #withdrawal button
-        withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookdraw(self.root, self.parent, self.engine)],
+        withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget, bookdraw(self.root, self.parent, self.engine)],
                                    text="Book Withdrawal", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
         withdraw_btn.config(font=(FONT, FONT_SIZE, STYLE))
         withdraw_btn.place(relx=0.7, rely=0.5, anchor='center')
@@ -72,7 +71,7 @@ class bookinsert(Container):
 
         self.e1 = tk.Entry(root)
         self.e1.place(relx=0.6, rely=0.23)
-        self.accessionNo = self.e1.get()
+        
 
         #title
         self.title_lbl = tk.Label(self.container, text = "Title", fg='black', bg='#afc8c9', relief='raised', width=30, height=2)
@@ -81,7 +80,6 @@ class bookinsert(Container):
         
         self.e2 = tk.Entry(root)
         self.e2.place(relx=0.6, rely=0.32)
-        self.title = self.e2.get()
 
         #authors 
         self.authors_lbl = tk.Label(self.container, text = "Authors", fg='black', bg='#afc8c9', relief='raised', width=30, height=2)
@@ -90,8 +88,7 @@ class bookinsert(Container):
         
         self.e3 = tk.Entry(root)
         self.e3.place(relx=0.6, rely=0.40)
-        self.authors = self.e3.get()
-
+        
         #isbn
         self.isbn_lbl = tk.Label(self.container, text = "ISBN", fg='black', bg='#afc8c9', relief='raised', width=30, height=2)
         self.isbn_lbl.config(font=(FONT, FONT_SIZE, STYLE))
@@ -99,7 +96,6 @@ class bookinsert(Container):
         
         self.e4 = tk.Entry(root)
         self.e4.place(relx=0.6, rely=0.48)
-        self.isbn = self.e4.get()
 
         #publisher
         self.publisher_lbl = tk.Label(self.container, text = "Publisher",  fg='black', bg='#afc8c9', relief='raised', width=30, height=2)
@@ -108,7 +104,6 @@ class bookinsert(Container):
         
         self.e5 = tk.Entry(root)
         self.e5.place(relx=0.6, rely=0.56)
-        self.publisher = self.e5.get()
 
         #publication year
         self.publication_year_lbl = tk.Label(self.container, text = "Publication Year", fg='black', bg='#afc8c9', relief='raised', width=30, height=2)
@@ -117,23 +112,29 @@ class bookinsert(Container):
         
         self.e6 = tk.Entry(root)
         self.e6.place(relx=0.6, rely=0.65)
-        self.publication_year = self.e6.get()
 
         #adding
         self.add = tk.Button(self.container, text='Add New Book',
-                        command=lambda:self.BookInsertion(),
+                        command=self.BookInsertion,
                         width=30, height=1, relief='raised', borderwidth=5)
         self.add.config(font=(FONT, FONT_SIZE, STYLE))
         self.add.place(relx=0.3, rely=0.69, anchor="center") 
 
         #home
-        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(self.root, self.parent, self.engine)],
+        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget, BookLandingPage(self.root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home_btn.place(relx=0.7, rely=0.82, anchor="center")
 
 
     def BookInsertion(self):
+        self.accessionNo = self.e1.get()
+        self.title = self.e2.get()
+        self.authors = self.e3.get()
+        self.isbn = self.e4.get()
+        self.publisher = self.e5.get()
+        self.publication_year = self.e6.get()
+        
         sql_statement = "SELECT * FROM books WHERE accession_no = %s"
         data_book = self.cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
 
@@ -157,7 +158,7 @@ class bookinsert(Container):
 
         #back to acquisition button
         self.return_btn = tk.Button(self.container, text='Back to\nAcquisition\nFunction',
-                             command=lambda:[self.ErrorPop.lower(),self.return_btn.lower()],
+                             command=lambda:[self.ErrorPop.lower ,self.return_btn.lower],
                                      bg='#c5e3e5', width=12, height=3, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.5, rely=0.55, anchor="center")
@@ -181,7 +182,7 @@ class bookinsert(Container):
 
         #back to acquisition button
         self.return_btn = tk.Button(self.container, text='Back to Acquisition Function',
-                             command=lambda:[self.ErrorPop.lower(),self.return_btn.lower()],
+                             command=lambda:[self.ErrorPop.lower,self.return_btn.lower],
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -213,7 +214,6 @@ class bookdraw(Container):
 
         self.e1 = tk.Entry(root)
         self.e1.place(relx=0.6, rely=0.45)
-        self.accessionNo = self.e1.get()
 
         #withdrawing
         self.add = tk.Button(self.container, text='Withdraw Book',
@@ -224,7 +224,7 @@ class bookdraw(Container):
         self.add.place(relx=0.3, rely=0.63, anchor="center") 
 
         #home
-        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(root, self.parent, self.engine)],
+        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget, BookLandingPage(root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home_btn.place(relx=0.7, rely=0.75, anchor="center")
@@ -233,6 +233,8 @@ class bookdraw(Container):
         
 
     def BookWithdraw(self):
+        self.accessionNo = self.e1.get()
+        
         #retrieving data from sql
         sql_statement = "Select * FROM books WHERE accession_no = %s"
         book_data = self.cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
@@ -256,7 +258,7 @@ class bookdraw(Container):
         self.Confirm.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to withdrawal button
-        self.return_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseConfirm(),
+        self.return_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseConfirm,
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -269,11 +271,11 @@ class bookdraw(Container):
         data_reserve = self.cursor.execute(sql_statement2,(self.accessionNo,)).fetchall()
         
         if len(data_loan) > 0:
-            return self.failedonloan()
+            return self.failedonloan
         elif len(data_reserve) > 0:
-            return self.failedonreserve()
+            return self.failedonreserve
         else:
-            return self.success()
+            return self.success
         
         root.mainloop()
 
@@ -281,7 +283,7 @@ class bookdraw(Container):
     def failedonloan(self):
         #confirm withdrawal button
         b1 = tk.Button(self.container, text="Confirm Withdrawal",
-                    command=lambda:[self.CloseConfirmPage(), self.bookonloan()],
+                    command=lambda:[self.CloseConfirmPage, self.bookonloan],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         b1.config(font=(FONT, FONT_SIZE, STYLE))
         b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -293,7 +295,7 @@ class bookdraw(Container):
         self.BookErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to withdrawal button
-        self.back_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloserErrorPage(),
+        self.back_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloserErrorPage,
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -302,7 +304,7 @@ class bookdraw(Container):
     def failedonreserve(self):
         #confirm withdrawal button
         b1 = tk.Button(self.container, text="Confirm Withdrawal",
-                    command=lambda:[self.CloseConfirmPage(), self.bookonreserve()],
+                    command=lambda:[self.CloseConfirmPage, self.bookonreserve],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         b1.config(font=(FONT, FONT_SIZE, STYLE))
         b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -314,7 +316,7 @@ class bookdraw(Container):
         self.BookErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to withdrawal button
-        self.return_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseError(),
+        self.return_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseError,
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -323,7 +325,7 @@ class bookdraw(Container):
     def success(self):
         #confirm withdrawal button
         b1 = tk.Button(self.container, text="Confirm Withdrawal",
-                    command=lambda:[self.CloseConfirmPage(), self.SQLWithdraw()],
+                    command=lambda:[self.CloseConfirmPage, self.SQLWithdraw],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         b1.config(font=(FONT, FONT_SIZE, STYLE))
         b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -337,11 +339,11 @@ class bookdraw(Container):
         self.cursor.execute(sql_statement4,(self.accessionNo,))
 
     def CloseErrorPage(self):
-        self.BookErrorPop.lower()
-        self.back_btn.lower()
+        self.BookErrorPop.lower
+        self.back_btn.lower
 
     def CloseConfirmPage(self):
-        self.Confirm.lower()
-        self.b1.lower()
-        self.return_btn.lower()
+        self.Confirm.lower
+        self.b1.lower
+        self.return_btn.lower
 
