@@ -5,16 +5,16 @@ from apps.resources.variables import *
 from apps.resources.container import Container
 
 
-USER = 'root'
-PASSWORD = 'joansoh17'
-HOST = '127.0.0.1'
-PORT = 3306
-DATABASE = 'Library'
-
-engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
-            USER, PASSWORD, HOST, PORT, DATABASE))
-
-cursor = engine.connect()
+# USER = 'root'
+# PASSWORD = 'joansoh17'
+# HOST = '127.0.0.1'
+# PORT = 3306
+# DATABASE = 'Library'
+#
+# engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
+#             USER, PASSWORD, HOST, PORT, DATABASE))
+#
+# cursor = engine.connect()
 
 
 class BookLandingPage(Container):
@@ -37,14 +37,14 @@ class BookLandingPage(Container):
         #instructions
         instructions = tk.Label(self.container, text='Select one of the options below:', fg='black', bg='#c5e3e5',
                            relief='raised', width=60, height=3)
-        instructions.config(font=(FONT, FONT_SIZE, STYLE)) 
+        instructions.config(font=(FONT, FONT_SIZE, STYLE))
         instructions.place(relx=0.5, rely=0.09, anchor="center")
 
         #acquisition button
-        acquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookinsert(self.root, self.parent, self.engine)],
+        aquisition_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookinsert(self.root, self.engine)],
                                    text="Book Acquisition", bg='#c5e3e5', width=50, height=4, relief='raised', borderwidth=5)
-        acquisition_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        acquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
+        aquisition_btn.config(font=(FONT, FONT_SIZE, STYLE))
+        aquisition_btn.place(relx=0.7, rely=0.3, anchor='center')
 
         #withdrawal button
         withdraw_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), bookdraw(self.root, self.parent, self.engine)],
@@ -59,7 +59,7 @@ class BookLandingPage(Container):
                                  borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         home_btn.place(relx=0.7, rely=0.68, anchor="center")
-        
+
 #Insertion
 class bookinsert(Container):
     def __init__(self, root, parent, engine):
@@ -134,7 +134,7 @@ class bookinsert(Container):
 
         #adding
         self.add = tk.Button(self.container, text='Add New Book',
-                        command=self.BookInsertion(),
+                        command=self.BookInsertion,
                              relief='raised', borderwidth=5)
         self.add.config(font=(FONT, FONT_SIZE, STYLE))
         self.add.place(relx=0.3, rely=0.70, anchor="center") 
@@ -145,11 +145,10 @@ class bookinsert(Container):
         self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home_btn.place(relx=0.7, rely=0.82, anchor="center")
 
-        root.mainloop()
-        
+
     def BookInsertion(self):
         sql_statement = "SELECT * FROM books WHERE accession_no = %s"
-        data_book = cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
+        data_book = self.cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
 
         #checking for missing or incomplete fields
         listOfInputs = [self.accessionNo, self.title, self.authors, self.isbn, self.publisher, self.publication_year]
@@ -188,10 +187,10 @@ class bookinsert(Container):
         self.cursor.execute(query2, (author_name, self.accessionNo))
     
         if authors[1] != '':
-            cursor.execute(query, (authors[1], self.accession_no))
+            self.cursor.execute(query, (authors[1], self.accession_no))
     
         if authors[2] != '':
-            cursor.execute(query, (authors[2], self.accession_no))
+            self.cursor.execute(query, (authors[2], self.accession_no))
     
         #success text box
         self.ErrorPop = tk.Label(self.container, text='Success! New book added in Library', fg='black', bg='#00FF00',
@@ -244,7 +243,7 @@ class bookdraw(Container):
         self.add.place(relx=0.3, rely=0.63, anchor="center") 
 
         #home
-        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(root)],
+        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(root, engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home_btn.place(relx=0.7, rely=0.82, anchor="center")
@@ -252,8 +251,7 @@ class bookdraw(Container):
         root.mainloop()
         
 
-    def BookWithdraw(Container): 
-        self.cursor = engine.connect()
+    def BookWithdraw(self):
         #sql code here to determine book on loan/ book on reservation/ success
         sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = %s"
         data_loan = self.cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
@@ -261,7 +259,7 @@ class bookdraw(Container):
         sql_statement2 = "SELECT * FROM Reservation WHERE ReservedBookAccession = %s"
         data_reserve = self.cursor.execute(sql_statement2,(self.accessionNo,)).fetchall()
         
-        if len(data_fine) > 0:
+        if len(data_loan) > 0:
             return self.failedonloan()
         elif len(data_reserve) > 0:
             return self.failedonreserve()
@@ -364,4 +362,4 @@ class bookdraw(Container):
         self.Confirm.lower()
         self.b1.lower()
         self.return_btn.lower()
-    
+
