@@ -45,6 +45,7 @@ class FinePayment(Container):
     def __init__(self, root, parent, engine):
         super().__init__(root, "Fine Payment Menu")
         self.init_image()
+        self.root = root
         self.parent = parent
         self.engine = engine
         self.cursor = self.engine.connect()
@@ -61,7 +62,7 @@ class FinePayment(Container):
         self.membership.config(font=(FONT, FONT_SIZE, STYLE))
         self.membership.place(relx=0.4, rely=0.25, anchor="center")
 
-        self.e1 = tk.Entry(root)
+        self.e1 = tk.Entry(self.root)
         self.e1.place(relx=0.6, rely=0.28)
         
         #payment date
@@ -72,7 +73,7 @@ class FinePayment(Container):
 
         self.TodayDate = dt.datetime.now()
 
-        self.e2 = tk.Entry(root)
+        self.e2 = tk.Entry(self.root)
         self.e2.insert(0, f"{self.TodayDate:%B, %d, %Y}")
         self.e2.place(relx=0.6, rely=0.40)
         
@@ -83,12 +84,12 @@ class FinePayment(Container):
         self.PaymentAmount.config(font=(FONT, FONT_SIZE, STYLE))
         self.PaymentAmount.place(relx=0.4, rely=0.45, anchor="center")
 
-        self.e3 = tk.Entry(root)
+        self.e3 = tk.Entry(self.root)
         self.e3.place(relx=0.6, rely=0.52)
 
         #pay fine
         self.pay = tk.Button(self.container, text='Pay Fine',
-                        command=lambda:[self.ClosePayPopup, self.FinePay],
+                        command=lambda:[self.FinePay, self.ClosePayPopup],
                         bg='#c5e3e5', width=30, height=1,
                              relief='raised', borderwidth=5)
         self.pay.config(font=(FONT, FONT_SIZE, STYLE))
@@ -107,6 +108,7 @@ class FinePayment(Container):
         self.MemberID = self.e1.get()
         self.Date = self.e2.get()
         self.PaymentAmt = self.e3.get()
+        
         #confirmation text box
         txt = "Please Confirm Details to Be Correct\n\nPayment due: {}\n(Exact Fee only)\nMember ID: {}\nPayment Date: {}"
         self.confirm = tk.Label(self.container,

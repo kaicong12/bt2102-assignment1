@@ -69,7 +69,7 @@ class bookinsert(Container):
         self.accession_lbl.config(font=(FONT, FONT_SIZE, STYLE))
         self.accession_lbl.place(relx=0.4, rely=0.21, anchor="center")
 
-        self.e1 = tk.Entry(root)
+        self.e1 = tk.Entry(self.root)
         self.e1.place(relx=0.6, rely=0.23)
         
 
@@ -78,7 +78,7 @@ class bookinsert(Container):
         self.title_lbl.config(font=(FONT, FONT_SIZE, STYLE))
         self.title_lbl.place(relx=0.4, rely=0.28, anchor="center")
         
-        self.e2 = tk.Entry(root)
+        self.e2 = tk.Entry(self.root)
         self.e2.place(relx=0.6, rely=0.32)
 
         #authors 
@@ -86,7 +86,7 @@ class bookinsert(Container):
         self.authors_lbl.config(font=(FONT, FONT_SIZE, STYLE))
         self.authors_lbl.place(relx=0.4, rely=0.35, anchor="center")
         
-        self.e3 = tk.Entry(root)
+        self.e3 = tk.Entry(self.root)
         self.e3.place(relx=0.6, rely=0.40)
         
         #isbn
@@ -94,7 +94,7 @@ class bookinsert(Container):
         self.isbn_lbl.config(font=(FONT, FONT_SIZE, STYLE))
         self.isbn_lbl.place(relx=0.4, rely=0.42, anchor="center")
         
-        self.e4 = tk.Entry(root)
+        self.e4 = tk.Entry(self.root)
         self.e4.place(relx=0.6, rely=0.48)
 
         #publisher
@@ -102,7 +102,7 @@ class bookinsert(Container):
         self.publisher_lbl.config(font=(FONT, FONT_SIZE, STYLE))
         self.publisher_lbl.place(relx=0.4, rely=0.49, anchor="center")
         
-        self.e5 = tk.Entry(root)
+        self.e5 = tk.Entry(self.root)
         self.e5.place(relx=0.6, rely=0.56)
 
         #publication year
@@ -110,7 +110,7 @@ class bookinsert(Container):
         self.publication_year_lbl.config(font=(FONT, FONT_SIZE, STYLE))
         self.publication_year_lbl.place(relx=0.4, rely=0.56, anchor="center")
         
-        self.e6 = tk.Entry(root)
+        self.e6 = tk.Entry(self.root)
         self.e6.place(relx=0.6, rely=0.65)
 
         #adding
@@ -217,7 +217,7 @@ class bookdraw(Container):
         self.accession.config(font=(FONT, FONT_SIZE, STYLE))
         self.accession.place(relx=0.4, rely=0.4, anchor="center")
 
-        self.e1 = tk.Entry(root)
+        self.e1 = tk.Entry(self.root)
         self.e1.place(relx=0.6, rely=0.45)
 
         #withdrawing
@@ -229,7 +229,7 @@ class bookdraw(Container):
         self.add.place(relx=0.3, rely=0.63, anchor="center") 
 
         #home
-        self.home_btn = tk.Button(root, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(root, self.parent, self.engine)],
+        self.home_btn = tk.Button(self.container, text='Back to Books Menu', command=lambda:[self.container.grid_forget(), BookLandingPage(root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home_btn.place(relx=0.7, rely=0.75, anchor="center")
