@@ -451,6 +451,31 @@ class MemberUpdate(Container):
             self.back_to_update_btn.config(font=(FONT,FONT_SIZE,STYLE))
             self.back_to_update_btn.place(relx=0.5, rely=0.7, anchor='center')
 
+    def success_notif(self):
+            popup_text = "Success!\n\n ALS Membership Updated."
+            popup_bg = "#9ddd58"
+            popup_font_color = "#000000"
+            
+            self.popup_heading_label = Label(self.container, text=popup_text, bg =popup_bg, fg=popup_font_color, width=35, height=14)
+            self.popup_heading_label.config(font=(FONT,FONT_SIZE, STYLE))
+            self.popup_heading_label.place(relx=0.5, rely=0.5, anchor="center")
+
+            self.confirm_update_btn = Button(self.container, text='Update Another Member', padx=10, pady=10,\
+                command=lambda:self.go_to_update_member(), bg='#27c0ab', borderwidth=5, relief='raised',\
+                highlightthickness=4, highlightbackground='#fae420')
+            self.confirm_update_btn.config(font=(FONT,15,STYLE))
+            self.confirm_update_btn.place(relx=0.40, rely=0.7, anchor='center')
+
+            self.back_to_update_btn = Button(self.container, text='Back to Update Function', padx=10, pady=10,\
+                command=lambda:self.close(self.popup_heading_label, self.popup_body_label, self.confirm_update_btn, self.back_to_update_btn),\
+                    bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
+            self.back_to_update_btn.config(font=(FONT,15,STYLE), wraplength=300)
+            self.back_to_update_btn.place(relx=0.60, rely=0.7, anchor='center')
+
+    def go_to_update_member(self):
+        MemberUpdate(self.root, self.parent, self.engine)
+        self.container.grid_forget()
+
     def close(self, *args):
         for element in args:
             element.lower()
@@ -477,7 +502,7 @@ class MemberUpdate(Container):
             cursor = self.engine.connect()
             cursor.execute(sql_query)
             self.close(self.popup_heading_label, self.popup_body_label, self.confirm_update_btn, self.back_to_update_btn)
-            self.popup
+            self.success_notif()
         
         except(IntegrityError, DataError, OperationalError):
             self.close(self.popup_heading_label, self.popup_body_label, self.confirm_update_btn, self.back_to_update_btn)
