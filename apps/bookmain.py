@@ -40,7 +40,7 @@ class BookLandingPage(Container):
         
         #main menu button
         home_btn = tk.Button(self.container, text='Back to Main Menu',
-                                 command=parent.return_to_main_menu(self),
+                                 command=parent.return_to_main_menu,
                                  bg='#c5e3e5', width=20, height=2, relief='raised',
                                  borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))

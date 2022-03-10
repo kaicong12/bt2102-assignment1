@@ -32,7 +32,7 @@ class FineLandingPage(Container):
 
         #main menu button
         home_btn = tk.Button(self.container, text='Back to Main Menu',
-                                 command=parent.return_to_main_menu(self),
+                                 command=parent.return_to_main_menu,
                                  bg='#c5e3e5', width=20, height=2, relief='raised',
                                  borderwidth=5,highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -119,7 +119,7 @@ class FinePayment(Container):
 
         #back to fine button
         self.return_btn = tk.Button(self.container, text="Back to Payment Function",
-                    command=lambda:[self.CloseConfirmPage, FinePayment(self.root, self.parent, self.engine)],
+                    command=lambda:[self.CloseConfirmPage(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.7, rely=0.7, anchor="center")
@@ -130,17 +130,17 @@ class FinePayment(Container):
         if len(data_fine) > 0: #whether member has fine
             sql_statement2 = "SELECT amount FROM Fine WHERE memberid = '{}'".format(self.MemberID)
             data_amt = self.cursor.execute(sql_statement2).fetchall()
-            if data_amt == self.PaymentAmnt: #whether payment amount correct
-                return self.success
+            if data_amt == self.PaymentAmt: #whether payment amount correct
+                return self.success()
             else:
-                return self.failedincorrectamt
+                return self.failedincorrectamt()
         else:
-            return self.failednofine
+            return self.failednofine()
         
     #member has fine and correct amount 
     def success(self):
         self.b1 = tk.Button(self.container, text="Confirm Payment",
-                    command=lambda:[self.CloseConfirmPage, self.SQLPay, FinePayment(self.root, self.parent, self.engine)],
+                    command=lambda:[self.CloseConfirmPage, self.SQLPay, self.container.grid_forget(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.b1.config(font=(FONT, FONT_SIZE, STYLE))
         self.b1.place(relx=0.3, rely=0.7, anchor="center")
@@ -178,7 +178,7 @@ class FinePayment(Container):
         self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to payment button
-        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage(), FinePayment(self.root, self.parent, self.engine)],
+        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage, self.container.grid_forget(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -190,7 +190,7 @@ class FinePayment(Container):
         self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
          #back to payment button
-        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage(), FinePayment(self.root, self.parent, self.engine)],
+        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage, self.container.grid_forget(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -207,6 +207,7 @@ class FinePayment(Container):
         self.b1.lower()
 
     def ClosePayPopup(self):
+        print("test")
         self.instructions.lower()
         self.membership.lower()
         self.e1.lower()
