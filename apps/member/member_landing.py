@@ -1,8 +1,9 @@
 #from textwrap import wrap
+from ast import Str
 from multiprocessing import parent_process
 from tkinter import Label, Button, Entry, Tk, ttk, Canvas, Frame
 from PIL import Image, ImageTk
-from sqlalchemy import engine_from_config, text
+from sqlalchemy import engine_from_config, null, text
 from sqlalchemy.exc import IntegrityError, DataError
 from apps.resources.variables import *
 from apps.resources.container import Container
@@ -33,7 +34,7 @@ class Membership(Container):
         self.member_create_btn.place(relx=BUTTON_X, rely=0.16)
 
         # Membership Deletion
-        self.member_delete_btn = Button(self.container, text='2. Membership Deletion', command=self.gp_to_delete_member,
+        self.member_delete_btn = Button(self.container, text='2. Membership Deletion', command=self.go_to_delete_member,
                                 height=3, width=20, wraplength=200)
         self.member_delete_btn.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#2964e7')
         self.member_delete_btn.place(relx=BUTTON_X, rely=0.32)
@@ -48,7 +49,9 @@ class Membership(Container):
         MemberCreate(self.root, self.parent, self.engine)
         self.container.grid_forget()
     
-    def gp_to_delete_member(self):
+    def go_to_delete_member(self):
+        MemberDelete(self.root, self.parent, self.engine)
+        self.container.grid_forget()
         print("Delete Member")
 
     def go_to_update_member(self):
@@ -68,7 +71,7 @@ class MemberCreate(Container):
         self.label.place(relx=HEADING_LABEL_X, rely=HEADING_LABEL_Y, anchor="center")  # label is always mid align
 
         # back to report_menu button
-        self.return_btn = Button(self.container, text='Back to Main Menu', command=self.go_to_membership,
+        self.return_btn = Button(self.container, text='Back to Membership Menu', command=self.go_to_membership,
                                  bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -168,29 +171,114 @@ class MemberCreate(Container):
         except (IntegrityError, DataError, ValueError):
             self.popup(False)
 
-class MemberCreate(Container):
+class MemberDelete(Container):
     def __init__(self, root, parent, engine):
-        super().__init__(root, "Create Member Menu")
+        super().__init__(root, "Delete Member Menu")
         self.init_image()
         self.parent = parent
         self.engine = engine
 
         # Title Label
-        self.label = Label(self.container, text='To Create Member, Please Enter Requested Information Below', fg='black', bg='#2dccb6',
+        self.label = Label(self.container, text='To Delete Member, Please Enter Your Membership ID', fg='black', bg='#2dccb6',
                     relief='raised', width=60, height=3)
         self.label.config(font=(FONT, FONT_SIZE, STYLE))
         self.label.place(relx=HEADING_LABEL_X, rely=HEADING_LABEL_Y, anchor="center")  # label is always mid align
 
+
+        # Delete MembershipID box
+        self.ID_box = Label(self.container, text='Membership ID', bg='#49abde', fg='white', height=3, width=20)
+        self.ID_box.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ID_box.place(relx=MENU_LABEL_X, rely=0.49, anchor='center')
+        self.ID_ent = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
+        self.ID_ent.place(relx=REPORT_ENTRY_BOX_X, rely=0.49, anchor='center',
+                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
+
         # back to report_menu button
-        self.return_btn = Button(self.container, text='Back to Main Menu', command=self.go_to_membership,
+        self.return_btn = Button(self.container, text='Back to Membership Menu', command=self.go_to_membership,
                                  bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.7, rely=0.9, anchor="center")
 
         # book search button
-        self.create_member_btn = Button(self.container, text='Create Member', command=self.create_member,
+        self.create_member_btn = Button(self.container, text='Delete Member', command=lambda:self.get_member_details(self.ID_ent.get()),
                                  bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
         self.create_member_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.create_member_btn.place(relx=0.3, rely=0.9, anchor="center")
+
+    def go_to_membership(self):
+        Membership(self.root, self.parent, self.engine)
+        self.container.grid_forget()
+    
+    def get_member_details(self, Id:str):
+        sql_statement = """SELECT * FROM members WHERE memberid = "{}";""".format(Id)
+        cursor = self.engine.connect()
+        data = cursor.execute(sql_statement).fetchall()
+        if len(data) == 0:
+            self.popup(False, 0)
+            # return
+        else:
+            self.popup(True, data[0])
+    
+    def popup(self, response:bool, info = None):
+        if response:
+            popup_text = "Please Confirm Details to be Correct."
+            popup_bg = "#9ddd58"
+            popup_font_color = "#000000"
+            memberInfo_format = "Member ID: {}\nName: {}\nFaculty: {}\nPhone Number: {}\nEmail Address: {}".format(info[0], info[1],\
+                info[2], info[3], info[4])
+            
+            self.popup_heading_label = Label(self.container, text=popup_text, bg =popup_bg, fg=popup_font_color, width=35, height=2)
+            self.popup_heading_label.config(font=(FONT,FONT_SIZE, STYLE))
+            self.popup_heading_label.place(relx=0.5, rely=0.3, anchor="center")
+
+            self.popup_body_label = Label(self.container, text=memberInfo_format, bg =popup_bg, fg=popup_font_color, width=35, height=12)
+            self.popup_body_label.config(font=(FONT,FONT_SIZE, STYLE))
+            self.popup_body_label.place(relx=0.5, rely=0.55, anchor="center")
+
+            self.confirm_delete_btn = Button(self.container, text='Confirm Delete', padx=10, pady=10,\
+                command=lambda:self.delete_member(self.ID_ent.get()), bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
+            self.confirm_delete_btn.config(font=(FONT,FONT_SIZE,STYLE))
+            self.confirm_delete_btn.place(relx=0.35, rely=0.7, anchor='center')
+
+            self.back_to_delete_btn = Button(self.container, text='Back to Delete Function', padx=10, pady=10,\
+                command=lambda:self.close(self.popup_heading_label, self.popup_body_label, self.confirm_delete_btn, self.back_to_delete_btn),\
+                     bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
+            self.back_to_delete_btn.config(font=(FONT,FONT_SIZE,STYLE), wraplength=300)
+            self.back_to_delete_btn.place(relx=0.55, rely=0.7, anchor='center')
+
+
+
+        else:
+            if info == 0:
+                popup_text = "Error!\n\n\nMember does not exist"
+            else:
+                popup_text = "Error!\n\n\nMember has outstanding loans or fines."
+            popup_bg = "#cc0505"
+            popup_font_color = "#ffff00"
+
+            self.popup_label = Label(self.container, text=popup_text, bg =popup_bg, fg=popup_font_color, width=40, height=15, wraplength=450)
+            self.popup_label.config(font=(FONT,FONT_SIZE, STYLE))
+            self.popup_label.place(relx=0.5, rely=0.5, anchor="center")
+
+            self.back_to_delete_btn = Button(self.container, text='Back to Delete Function', padx=20, pady=20,\
+                command=lambda:self.close(self.popup_label, self.back_to_delete_btn),\
+                     bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
+            self.back_to_delete_btn.config(font=(FONT,FONT_SIZE,STYLE))
+            self.back_to_delete_btn.place(relx=0.5, rely=0.7, anchor='center')
+
+    def close(self, *args):
+        for element in args:
+            element.lower()
+
+    def delete_member(self, id:str):
+        try:
+            sql_query = """DELETE FROM members WHERE memberid = '{}';""".format(id)
+            cursor = self.engine.connect()
+            cursor.execute(sql_query)
+            self.close(self.popup_heading_label, self.popup_body_label, self.confirm_delete_btn, self.back_to_delete_btn)
+        
+        except(IntegrityError, DataError):
+            self.close(self.popup_heading_label, self.popup_body_label, self.confirm_delete_btn, self.back_to_delete_btn)
+            self.popup(False)
