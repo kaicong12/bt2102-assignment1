@@ -1,15 +1,14 @@
+from landing_page import LandingPage
+from apps.resources.container import Container
 from tkinter import Tk
 from sqlalchemy import create_engine
 import pymysql
 
-from landing_page import LandingPage
-from apps.resources.container import Container
-
 
 class LibraryApp(Container):
     def __init__(self):
-        USER = 'kctey'
-        PASSWORD = 'CQu1FxSp'
+        USER = 'root'
+        PASSWORD = 'joansoh17'
         HOST = '127.0.0.1'
         PORT = 3306
         DATABASE = 'Library'
@@ -18,5 +17,16 @@ class LibraryApp(Container):
             USER, PASSWORD, HOST, PORT, DATABASE
         ))
 
-engine.connect()   
-print("Success")
+        self.root = Tk()
+
+        self.landing = LandingPage(self.root, self, self.engine)
+
+        self.root.mainloop()
+
+    def return_to_main_menu(self, child):
+        LandingPage(self.root, self, self.engine)
+        child.container.grid_forget()
+
+
+app = LibraryApp()
+
