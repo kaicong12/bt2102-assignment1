@@ -122,7 +122,7 @@ class Borrow(Container):
         else:
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Loan Details To \nBe Correct", 
-            width = 30, height=20, font=(FONT), anchor='n')
+            width = 40, height=15, anchor='n', font=(FONT,FONT_SIZE, STYLE), bg="#9ddd58", fg="#000000")
             self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
             #AN Entry
             self.input_AN = Label(self.container, text=self.AN_entry.get())
@@ -396,8 +396,8 @@ class Return(Container):
             sql_statement = "SELECT BorrowDate FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
             data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
             data_DD = data_BD + timedelta(days=14)
-            if date.today() > data_DD:
-                fine_amt =  (date.today() - data_DD).days
+            if datetime.strptime(self.RD_entry.get(), '%Y-%m-%d').date() > data_DD:
+                fine_amt = (datetime.strptime(self.RD_entry.get(), '%Y-%m-%d').date() - data_DD).days
             else:
                 fine_amt = 0 
             
@@ -479,13 +479,13 @@ class Return(Container):
         self.fine_label.lower()
         
         #Update loan with return date
-        sql_statement = "UPDATE loan SET ReturnedDate = '{}' WHERE BorrowedBookAccession = '{}'".format(date.today(), self.AN_entry.get())
+        sql_statement = "UPDATE loan SET ReturnedDate = '{}' WHERE BorrowedBookAccession = '{}'".format(self.RD_entry.get(), self.AN_entry.get())
         self.cursor.execute(sql_statement)
         #Find borrow date
         sql_statement = "SELECT BorrowDate FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
         data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
         data_DD = data_BD + timedelta(days=14)
-        fine_amt =  (date.today() - data_DD).days
+        fine_amt =  (datetime.strptime(self.RD_entry.get(), '%Y-%m-%d').date() - data_DD).days
         if fine_amt > 0:
             self.go_to_fineError()
         
@@ -499,15 +499,15 @@ class Return(Container):
         sql_statement = "SELECT BorrowDate FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
         data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
         data_DD = data_BD + timedelta(days=14)
-        fine_amt =  (date.today() - data_DD).days
+        fine_amt = (datetime.strptime(self.RD_entry.get(), '%Y-%m-%d').date() - data_DD).days
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
         self.backBorrowButton.place(relx=0.5, rely=0.65, anchor="center")
-        sql_statement = "SELECT * FROM fine WHERE accession_no = '{}'".format(self.AN_entry.get())
+        sql_statement = "SELECT * FROM fine WHERE memberid = '{}'".format(self.ID_entry.get())
         data_fine = self.cursor.execute(sql_statement).fetchall()
         if len(data_fine) == 0:
-            sql_statement = "INSERT INTO fine(memberid, accession_no, amount) VALUES('{}', '{}', {})".format(data_ID, self.AN_entry.get(), fine_amt )
+            sql_statement = "INSERT INTO fine(memberid, amount) VALUES('{}', {})".format(data_ID, fine_amt )
             self.cursor.execute(sql_statement)
         else:
             sql_statement = "UPDATE fine SET amount = amount + {} WHERE memberid = '{}'".format(fine_amt, self.ID_entry.get())

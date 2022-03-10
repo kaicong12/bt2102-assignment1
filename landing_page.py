@@ -28,7 +28,7 @@ class LandingPage(Container):
         # loan option
         self.landing_loan_image = self.open_image('apps/resources/loan.png', LANDING_PAGE_ICON_SIZE,
                                                     LANDING_PAGE_ICON_SIZE)
-        self.loan_button = Button(root, image=self.landing_report_image, command=self.go_to_loan)
+        self.loan_button = Button(root, image=self.landing_loan_image, command=self.go_to_loan)
         self.loan_button.place(relx=0.3, rely=0.3, anchor='center')
         self.loan_text = Label(root, text='Loans', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
                                  fg='black',
@@ -38,7 +38,7 @@ class LandingPage(Container):
         # reservation option
         self.landing_reservation_image = self.open_image('apps/resources/reservation.png', LANDING_PAGE_ICON_SIZE,
                                                     LANDING_PAGE_ICON_SIZE)
-        self.reservation_button = Button(root, image=self.landing_report_image, command=self.go_to_reservation)
+        self.reservation_button = Button(root, image=self.landing_reservation_image, command=self.go_to_reservation)
         self.reservation_button.place(relx=0.5, rely=0.5, anchor='center')
         self.reservation_text = Label(root, text='Reservations', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
                                  fg='black',
