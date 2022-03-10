@@ -44,7 +44,7 @@ class LandingPage(Container):
                                  fg='black',
                                  bg='white')
         self.reservation_text.place(relx=0.7, rely=0.9, anchor='center')
-
+    
 
 
     def go_to_report(self):

@@ -105,9 +105,20 @@ class Borrow(Container):
             self.ID_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
             self.ID_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.5, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
-        
-        
-        
+            
+            #checking for missing or incomplete fields
+            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get()]
+            if "" in listOfEntrys: #checks missing
+                return self.failed()
+    
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+                                fg='yellow', bg='#FF0000',
+                               relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift()    
+    
     def go_to_confirm(self):
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Loan Details To \nBe Correct", 
@@ -218,7 +229,12 @@ class Borrow(Container):
                 self.go_to_fineError()
                 break
             sql_statement = "INSERT INTO loan(BorrowerID, BorrowedBookAccession, BorrowDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), date.today())
-            self.cursor.execute(sql_statement)       
+            self.cursor.execute(sql_statement)
+            sql_statement = "SELECT ReservedBookAccession FROM reservation WHERE ReservedBookAccession = '{}'".format(self.AN_entry.get())
+            data_ifReserved = self.cursor.execute(sql_statement).fetchall()
+            if len(data_ifReserved) > 0:
+                sql_statement = "DELETE FROM reservation WHERE ReservedBookAccession = '{}'".format(self.AN_entry.get())
+
     def go_to_borrowedError(self):
         sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = '{}' AND ReturnedDate IS NULL".format(self.AN_entry.get())
         data_BookBorrowed = self.cursor.execute(sql_statement).fetchall()
@@ -298,6 +314,19 @@ class Return(Container):
             self.RD_entry.insert(0, (date.today()))
             self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.5, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
+            #checking for missing or incomplete fields
+            listOfEntrys = [self.AN_entry.get(), self.RD_entry.get()]
+            if "" in listOfEntrys: #checks missing
+                return self.failed()
+    
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+                                fg='yellow', bg='#FF0000',
+                               relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift()    
+    
         
         
         
@@ -440,22 +469,8 @@ class Return(Container):
         self.popupErrorLabel.lower()
         self.backBorrowButton.lower()
         
-        
-    
     def go_to_loans(self):
             Loan(self.root, self.parent, self.engine)
             self.container.grid_forget()    
 
 
-USER = 'root'
-PASSWORD = 'password'
-HOST = '127.0.0.1'
-PORT = 3306
-DATABASE = 'library'
-
-engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
-        USER, PASSWORD, HOST, PORT, DATABASE
-))    
-root = Tk()
-app = Loan(root, "LoanPage", engine)
-root.mainloop()

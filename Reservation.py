@@ -114,6 +114,20 @@ class Reserve(Container):
             self.RD_entry.insert(0, (date.today()))
             self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
+            
+            #checking for missing or incomplete fields
+            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get(), self.RD_entry.get()]
+            if "" in listOfEntrys: #checks missing
+                return self.failed()
+    
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+                                fg='yellow', bg='#FF0000',
+                               relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift()    
+    
         
         
         
@@ -305,6 +319,19 @@ class Cancel(Container):
             self.CD_entry.insert(0, (date.today()))
             self.CD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
+            
+            #checking for missing or incomplete fields
+            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get(), self.CD_entry.get()]
+            if "" in listOfEntrys: #checks missing
+                return self.failed()
+    
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+                                fg='yellow', bg='#FF0000',
+                               relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift() 
         
         
         
@@ -409,22 +436,8 @@ class Cancel(Container):
         self.popupErrorLabel.lower()
         self.backBorrowButton.lower()
       
-        
-    
     def go_to_reservations(self):
             Reservation(self.root, self.parent, self.engine)
             self.container.grid_forget()    
 
 
-USER = 'root'
-PASSWORD = 'password'
-HOST = '127.0.0.1'
-PORT = 3306
-DATABASE = 'library'
-
-engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
-        USER, PASSWORD, HOST, PORT, DATABASE
-))    
-root = Tk()
-app = Reservation(root, "LoanPage", engine)
-root.mainloop()
