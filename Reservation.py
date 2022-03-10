@@ -115,71 +115,82 @@ class Reserve(Container):
             self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
-            #checking for missing or incomplete fields
-            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get(), self.RD_entry.get()]
-            if "" in listOfEntrys: #checks missing
-                return self.failed()
+            
     
-    def failed(self):   
-        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
-                                fg='yellow', bg='#FF0000',
-                               relief='raised', width=30, height=15)
-        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
-        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
-        self.ErrorPop.lift()    
     
         
         
         
         
     def go_to_confirm(self):
-            #Prompt
-            self.popupPromptLabel = Label(self.container, text="Confirm Reservation Details To \nBe Correct", 
-            width = 30, height=20, font=(FONT), anchor='n')
-            self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
-            #AN Label
-            self.input_AN = Label(self.container, text=self.AN_entry.get())
-            self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
-            #Book title Label
-            sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
-            data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.input_BT = Label(self.container, text=data_BT) 
-            self.input_BT.place(relx=0.6, rely=0.35, anchor="center")
-            #Membership ID Label
-            self.input_ID = Label(self.container, text=self.ID_entry.get())
-            self.input_ID.place(relx=0.6, rely=0.4, anchor="center")
-            #Member name Label
-            sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get())
-            data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.input_name = Label(self.container, text=data_name) 
-            self.input_name.place(relx=0.6, rely=0.45, anchor="center")
-            #Reserve date Label
-            self.input_RD = Label(self.container, text=self.RD_entry.get())
-            self.input_RD.place(relx=0.6, rely=0.5, anchor="center")
-            #Labels
-            self.AN_label = Label(self.container, text = "Accession Number:")
-            self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
-            self.BT_label = Label(self.container, text = "Book Title:")
-            self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
-            self.ID_label = Label(self.container, text = "Membership ID:")
-            self.ID_label.place(relx=0.4, rely=0.4, anchor="center")
-            self.name_label = Label(self.container, text = "Member Name:")
-            self.name_label.place(relx=0.4, rely=0.45, anchor="center")
-            self.RD_label = Label(self.container, text = "Reserve Date")
-            self.RD_label.place(relx=0.4, rely=0.5, anchor="center")
+            #incomplete entry error
+            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get(), self.RD_entry.get()]
+            if "" in listOfEntrys: #checks missing
+                self.failed()
+                #Back to reserve function button
+                self.backReserveButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20, 
+                bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_incompleteError)
+                self.backReserveButton.place(relx=0.6, rely=0.65, anchor="center")
+            else:
+                #Prompt
+                self.popupPromptLabel = Label(self.container, text="Confirm Reservation Details To \nBe Correct", 
+                width = 30, height=20, font=(FONT), anchor='n')
+                self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
+                #AN Label
+                self.input_AN = Label(self.container, text=self.AN_entry.get())
+                self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
+                #Book title Label
+                sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
+                data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
+                self.input_BT = Label(self.container, text=data_BT) 
+                self.input_BT.place(relx=0.6, rely=0.35, anchor="center")
+                #Membership ID Label
+                self.input_ID = Label(self.container, text=self.ID_entry.get())
+                self.input_ID.place(relx=0.6, rely=0.4, anchor="center")
+                #Member name Label
+                sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get())
+                data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
+                self.input_name = Label(self.container, text=data_name) 
+                self.input_name.place(relx=0.6, rely=0.45, anchor="center")
+                #Reserve date Label
+                self.input_RD = Label(self.container, text=self.RD_entry.get())
+                self.input_RD.place(relx=0.6, rely=0.5, anchor="center")
+                #Labels
+                self.AN_label = Label(self.container, text = "Accession Number:")
+                self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
+                self.BT_label = Label(self.container, text = "Book Title:")
+                self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
+                self.ID_label = Label(self.container, text = "Membership ID:")
+                self.ID_label.place(relx=0.4, rely=0.4, anchor="center")
+                self.name_label = Label(self.container, text = "Member Name:")
+                self.name_label.place(relx=0.4, rely=0.45, anchor="center")
+                self.RD_label = Label(self.container, text = "Reserve Date")
+                self.RD_label.place(relx=0.4, rely=0.5, anchor="center")
             
             
-            #Confirm Reservation Button
-            self.confirmReservationButton = Button(self.container, text="Confirm Reservation", padx=20, pady=20, 
-            command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
-            self.confirmReservationButton.place(relx=0.4, rely=0.65, anchor="center")
-            #Back to reserve function button
-            self.backBorrowButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20, 
-             bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
-            self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
             
+                #Confirm Reservation Button
+                self.confirmReservationButton = Button(self.container, text="Confirm Reservation", padx=20, pady=20, 
+                command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
+                self.confirmReservationButton.place(relx=0.4, rely=0.65, anchor="center")
+                #Back to reserve function button
+                self.backBorrowButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20, 
+                bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
+                self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
             
-            
+     
+    
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift()   
+    
+    def close_incompleteError(self):
+        self.ErrorPop.lower()
+        self.backReserveButton.lower()  
            
     def close_confirmPage(self):
         self.cursor = self.engine.connect()
@@ -217,8 +228,11 @@ class Reserve(Container):
         self.ID_label.lower()
         self.name_label.lower()
         self.RD_label.lower()
+        #checking for missing or incomplete fields
+        
         
         for x in range(1):
+           
             #Reservation quota error
             sql_statement = "Select ReserverID FROM reservation WHERE ReserverID = '{}'".format(self.ID_entry.get())
             data_BookReserved = self.cursor.execute(sql_statement).fetchall()
@@ -234,9 +248,11 @@ class Reserve(Container):
             sql_statement = "INSERT INTO reservation(ReserverID, ReservedBookAccession, ReservedDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), self.RD_entry.get())
             self.cursor.execute(sql_statement)       
     
+    
     def go_to_quotaError(self):
-        self.popupErrorLabel = Label(self.container, text="Error!\n\n Member currently has 2 Books on Reservation." 
-        ,width = 40, height=15)
+        self.popupErrorLabel = Label(self.container, text="Error!\n\n Member currently has 2 Books on Reservation.",
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backReserveButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -251,7 +267,8 @@ class Reserve(Container):
         print(total_fine)
         
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Member has outstanding Fine of:\n ${}".format(total_fine), 
-        width = 40, height=15)
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -320,22 +337,17 @@ class Cancel(Container):
             self.CD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
-            #checking for missing or incomplete fields
-            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get(), self.CD_entry.get()]
-            if "" in listOfEntrys: #checks missing
-                return self.failed()
-    
-    def failed(self):   
-        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
-                                fg='yellow', bg='#FF0000',
-                               relief='raised', width=30, height=15)
-        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
-        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
-        self.ErrorPop.lift() 
-        
-        
-        
     def go_to_confirm(self):
+        #checking for missing or incomplete fields
+        listOfEntrys = [self.AN_entry.get(), self.ID_entry.get(), self.CD_entry.get()]
+        if "" in listOfEntrys: #checks missing
+            self.failed()
+            #Back to cancel function button
+            self.backCancelButton = Button(self.container, text="Back to Cancellation Function", padx=20, pady=20, 
+             bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_incompleteError)
+            self.backCancelButton.place(relx=0.6, rely=0.65, anchor="center")
+            
+        else:
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Cancellation Details To \nBe Correct", 
             width = 30, height=20, font=(FONT), anchor='n')
@@ -370,7 +382,7 @@ class Cancel(Container):
             self.name_label.place(relx=0.4, rely=0.45, anchor="center")
             self.CD_label = Label(self.container, text = "Cancellation Date")
             self.CD_label.place(relx=0.4, rely=0.5, anchor="center")
-            
+           
             #Confirm Cancellation Button
             self.confirmCancellationButton = Button(self.container, text="Confirm Cancellation", padx=20, pady=20, 
             command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -380,7 +392,17 @@ class Cancel(Container):
              bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
             self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
             
-            
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift() 
+
+    def close_incompleteError(self):
+        self.ErrorPop.lower()
+        self.backCancelButton.lower()          
            
     def close_confirmPage(self):
         self.cursor = self.engine.connect()
@@ -426,7 +448,8 @@ class Cancel(Container):
 
     def go_to_cancelError(self):
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Member has no such reservation.", 
-        width = 40, height=15)
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Cancellation Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")

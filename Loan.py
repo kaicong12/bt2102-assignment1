@@ -106,20 +106,20 @@ class Borrow(Container):
             self.ID_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.5, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
-            #checking for missing or incomplete fields
-            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get()]
-            if "" in listOfEntrys: #checks missing
-                return self.failed()
+            
     
-    def failed(self):   
-        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
-                                fg='yellow', bg='#FF0000',
-                               relief='raised', width=30, height=15)
-        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
-        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
-        self.ErrorPop.lift()    
     
     def go_to_confirm(self):
+        
+        #checking for missing or incomplete fields
+        listOfEntrys = [self.AN_entry.get(), self.ID_entry.get()]
+        if "" in listOfEntrys: #checks missing
+            self.failed()
+            #Back to borrow function button
+            self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
+             bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_incompleteError)
+            self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
+        else:
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Loan Details To \nBe Correct", 
             width = 30, height=20, font=(FONT), anchor='n')
@@ -159,6 +159,11 @@ class Borrow(Container):
             self.name_label.place(relx=0.4, rely=0.5, anchor="center")
             self.DD_label = Label(self.container, text = "Due Date:")
             self.DD_label.place(relx=0.4, rely=0.55, anchor="center")
+            #checking for missing or incomplete fields
+            listOfEntrys = [self.AN_entry.get(), self.ID_entry.get()]
+            if "" in listOfEntrys: #checks missing
+                return self.failed()
+    
             #Confirm Loan Button
             self.confirmLoanButton = Button(self.container, text="Confirm Loan", padx=20, pady=20, 
             command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -168,7 +173,17 @@ class Borrow(Container):
              bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
             self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
             
-            
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift()  
+    
+    def close_incompleteError(self):
+        self.ErrorPop.lower()
+        self.backBorrowButton.lower()          
             
            
     def close_confirmPage(self):
@@ -228,25 +243,46 @@ class Borrow(Container):
             if len(data_fine) > 0:
                 self.go_to_fineError()
                 break
-            sql_statement = "INSERT INTO loan(BorrowerID, BorrowedBookAccession, BorrowDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), date.today())
-            self.cursor.execute(sql_statement)
-            sql_statement = "SELECT ReservedBookAccession FROM reservation WHERE ReservedBookAccession = '{}'".format(self.AN_entry.get())
-            data_ifReserved = self.cursor.execute(sql_statement).fetchall()
-            if len(data_ifReserved) > 0:
-                sql_statement = "DELETE FROM reservation WHERE ReservedBookAccession = '{}'".format(self.AN_entry.get())
+            sql_statement = "SELECT ReserverID, ReservedDate FROM reservation WHERE ReservedBookAccession = '{}' ORDER BY ReservedDate".format(self.AN_entry.get()) 
+            data_reserveInfo = self.cursor.execute(sql_statement).fetchall()
+            #if memberid matches reservedid and smallest reserved date matches reserverid
+            print(data_reserveInfo)
+            if len(data_reserveInfo) > 0:
+                if data_reserveInfo[0][0] == self.ID_entry.get():
+                    sql_statement = "INSERT INTO loan(BorrowerID, BorrowedBookAccession, BorrowDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), date.today())
+                    self.cursor.execute(sql_statement)
+                    sql_statement = "DELETE FROM reservation WHERE ReservedBookAccession = '{}' AND ReserverID = '{}'".format(self.AN_entry.get(), self.ID_entry.get())
+                    self.cursor.execute(sql_statement)
+                else:
+                    self.go_to_reserveError()
+            else:
+                sql_statement = "INSERT INTO loan(BorrowerID, BorrowedBookAccession, BorrowDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), date.today())
+                self.cursor.execute(sql_statement)
+    
+    def go_to_reserveError(self):
+        self.popupErrorLabel = Label(self.container, text="Error!\n\n Book currently reserved by another Member.", 
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
+        self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
+        self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
+            command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
+        self.backBorrowButton.place(relx=0.5, rely=0.65, anchor="center")
 
     def go_to_borrowedError(self):
         sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = '{}' AND ReturnedDate IS NULL".format(self.AN_entry.get())
         data_BookBorrowed = self.cursor.execute(sql_statement).fetchall()
-        self.popupErrorLabel = Label(self.container, text="Error!\n\n Book currently on Loan until:\n" + str(data_BookBorrowed[0][2] + timedelta(days=14)), width = 40, height=15)
+        self.popupErrorLabel = Label(self.container, text="Error!\n\n Book currently on Loan until:\n" + str(data_BookBorrowed[0][2] + timedelta(days=14)), 
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
         self.backBorrowButton.place(relx=0.5, rely=0.65, anchor="center")
     
     def go_to_quotaError(self):
-        self.popupErrorLabel = Label(self.container, text="Error!\n\n Member loan quota exceeded." 
-        ,width = 40, height=15)
+        self.popupErrorLabel = Label(self.container, text="Error!\n\n Member loan quota exceeded.",
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -254,7 +290,8 @@ class Borrow(Container):
     
     def go_to_fineError(self):
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Member has outstanding fines.", 
-        width = 40, height=15)
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -314,23 +351,23 @@ class Return(Container):
             self.RD_entry.insert(0, (date.today()))
             self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.5, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
-            #checking for missing or incomplete fields
-            listOfEntrys = [self.AN_entry.get(), self.RD_entry.get()]
-            if "" in listOfEntrys: #checks missing
-                return self.failed()
+            
     
-    def failed(self):   
-        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
-                                fg='yellow', bg='#FF0000',
-                               relief='raised', width=30, height=15)
-        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
-        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
-        self.ErrorPop.lift()    
+    
     
         
         
         
     def go_to_confirm(self):
+        #checking for missing or incomplete fields
+        listOfEntrys = [self.AN_entry.get(), self.RD_entry.get()]
+        if "" in listOfEntrys: #checks missing
+            self.failed()
+            #Back to return function button
+            self.backReturnButton = Button(self.container, text="Back to Return Function", padx=20, pady=20, 
+             bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_incompleteError)
+            self.backReturnButton.place(relx=0.6, rely=0.65, anchor="center")
+        else:
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Return Details To \nBe Correct", 
             width = 30, height=20, font=(FONT), anchor='n')
@@ -380,6 +417,7 @@ class Return(Container):
             self.RD_label.place(relx=0.4, rely=0.5, anchor="center")
             self.fine_label = Label(self.container, text = "Fine:")
             self.fine_label.place(relx=0.4, rely=0.55, anchor="center")
+
             #Confirm Return Button
             self.confirmReturnButton = Button(self.container, text="Confirm Return", padx=20, pady=20, 
             command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
@@ -389,10 +427,18 @@ class Return(Container):
              bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
             self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
             
+    def failed(self):   
+        self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
+        self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift()          
+
+    def close_incompleteError(self):
+        self.ErrorPop.lower()
+        self.backReturnButton.lower()   
             
-            
-            
-           
     def close_confirmPage(self):
         self.cursor = self.engine.connect()
         #Close confirmation page popup
@@ -446,7 +492,8 @@ class Return(Container):
         
     def go_to_fineError(self):
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Book returned successfully but has fines.", 
-        width = 40, height=15)
+        fg='yellow', bg='#FF0000',
+        relief='raised', width=30, height=15)
         #Find memberid
         sql_statement = "SELECT BorrowerID FROM loan WHERE BorrowedBookAccession = '{}'".format(self.AN_entry.get())
         data_ID = self.cursor.execute(sql_statement).fetchall()[0][0]
@@ -454,16 +501,19 @@ class Return(Container):
         data_BD = self.cursor.execute(sql_statement).fetchall()[0][0] 
         data_DD = data_BD + timedelta(days=14)
         fine_amt =  (date.today() - data_DD).days
-        sql_statement = "SELECT * FROM fine WHERE accession_no = '{}'".format(self.AN_entry.get())
-        data_ifgotfine = self.cursor.execute(sql_statement).fetchall()
-        if len(data_ifgotfine) == 0:
-            sql_statement = "INSERT INTO fine(memberid, accession_no, amount) VALUES('{}', '{}', {})".format(data_ID, self.AN_entry.get(), fine_amt )
-            self.cursor.execute(sql_statement)
-        
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
         self.backBorrowButton.place(relx=0.5, rely=0.65, anchor="center")
+        sql_statement = "SELECT * FROM fine WHERE accession_no = '{}'".format(self.AN_entry.get())
+        data_fine = self.cursor.execute(sql_statement).fetchall()
+        if len(data_fine) == 0:
+            sql_statement = "INSERT INTO fine(memberid, accession_no, amount) VALUES('{}', '{}', {})".format(data_ID, self.AN_entry.get(), fine_amt )
+            self.cursor.execute(sql_statement)
+        else:
+            sql_statement = "UPDATE fine SET amount = amount + {} WHERE memberid = '{}'".format(fine_amt, self.ID_entry.get())
+            self.cursor.execute(sql_statement)
+
 
     def closeError(self):
         self.popupErrorLabel.lower()
