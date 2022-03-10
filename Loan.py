@@ -246,7 +246,6 @@ class Borrow(Container):
             sql_statement = "SELECT ReserverID, ReservedDate FROM reservation WHERE ReservedBookAccession = '{}' ORDER BY ReservedDate".format(self.AN_entry.get()) 
             data_reserveInfo = self.cursor.execute(sql_statement).fetchall()
             #if memberid matches reservedid and smallest reserved date matches reserverid
-            print(data_reserveInfo)
             if len(data_reserveInfo) > 0:
                 if data_reserveInfo[0][0] == self.ID_entry.get():
                     sql_statement = "INSERT INTO loan(BorrowerID, BorrowedBookAccession, BorrowDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), date.today())

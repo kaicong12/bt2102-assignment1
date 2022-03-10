@@ -40,7 +40,7 @@ class LandingPage(Container):
                                                     LANDING_PAGE_ICON_SIZE)
         self.reservation_button = Button(root, image=self.landing_report_image, command=self.go_to_reservation)
         self.reservation_button.place(relx=0.5, rely=0.5, anchor='center')
-        self.reservation_text = Label(root, text='Loans', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
+        self.reservation_text = Label(root, text='Reservations', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
                                  fg='black',
                                  bg='white')
         self.reservation_text.place(relx=0.7, rely=0.9, anchor='center')

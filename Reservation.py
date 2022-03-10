@@ -228,8 +228,6 @@ class Reserve(Container):
         self.ID_label.lower()
         self.name_label.lower()
         self.RD_label.lower()
-        #checking for missing or incomplete fields
-        
         
         for x in range(1):
            
@@ -439,11 +437,17 @@ class Cancel(Container):
         self.ID_label.lower()
         self.name_label.lower()
         self.CD_label.lower()
-        #Member has no such reservation
-        sql_statement = "Select * FROM reservation WHERE ReservedBookAccession = '{}' AND ReserverID = '{}'".format(self.AN_entry.get(), self.ID_entry.get())
-        data_reservations = self.cursor.execute(sql_statement).fetchall()
-        if len(data_reservations) == 0:  
-            self.go_to_cancelError() 
+        for x in range(1):
+            #Member has no such reservation
+            sql_statement = "Select * FROM reservation WHERE ReservedBookAccession = '{}' AND ReserverID = '{}'".format(self.AN_entry.get(), self.ID_entry.get())
+            data_reservations = self.cursor.execute(sql_statement).fetchall()
+            if len(data_reservations) == 0:  
+                self.go_to_cancelError()
+                break
+            else:
+                sql_statement = "INSERT INTO reservation(ReserverID, ReservedBookAccession, ReservedDate) VALUES('{}', '{}', '{}')".format(self.ID_entry.get(), self.AN_entry.get(), self.RD_entry.get())
+                self.cursor.execute(sql_statement)     
+
         
 
     def go_to_cancelError(self):
