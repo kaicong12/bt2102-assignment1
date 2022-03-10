@@ -62,7 +62,7 @@ class FinePayment(Container):
         self.membership.place(relx=0.4, rely=0.25, anchor="center")
 
         self.e1 = tk.Entry(root)
-        self.e1.place(relx=0.6, rely=0.31)
+        self.e1.place(relx=0.6, rely=0.28)
         self.MemberID = self.e1.get()
 
         #payment date
@@ -71,12 +71,12 @@ class FinePayment(Container):
         self.PaymentDate.config(font=(FONT, FONT_SIZE, STYLE))
         self.PaymentDate.place(relx=0.4, rely=0.35, anchor="center")
 
-        self.Date = dt.datetime.now()
+        self.TodayDate = dt.datetime.now()
 
         self.e2 = tk.Entry(root)
-        self.e2.insert(0, f"{self.Date:%B, %d, %Y}")
-        self.e2.place(relx=0.6, rely=0.43)
-        self.Date= self.e1.get()
+        self.e2.insert(0, f"{self.TodayDate:%B, %d, %Y}")
+        self.e2.place(relx=0.6, rely=0.40)
+        self.Date = self.e2.get()
         
 
         #payment amount
@@ -86,7 +86,7 @@ class FinePayment(Container):
         self.PaymentAmount.place(relx=0.4, rely=0.45, anchor="center")
 
         self.e3 = tk.Entry(root)
-        self.e3.place(relx=0.6, rely=0.56)
+        self.e3.place(relx=0.6, rely=0.52)
         self.PaymentAmt = self.e3.get()
 
 
@@ -103,15 +103,19 @@ class FinePayment(Container):
                              command=lambda:[self.container.grid_forget(), FineLandingPage(self.root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home2_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        self.home2_btn.place(relx=0.7, rely=0.84, anchor="center")
+        self.home2_btn.place(relx=0.7, rely=0.75, anchor="center")
 
         root.mainloop()
 
     def FinePay(self):
+        self.MemberID = self.e1.get()
+        self.Date = self.e2.get()
+        self.PaymentAmt = self.e3.get()
         #confirmation text box
+        txt = "Please Confirm Details to Be Correct\n\nPayment due: {}\n(Exact Fee only)\nMember ID: {}\nPayment Date: {}"
         self.confirm = tk.Label(self.container,
-                    text='Please Confirm Details to Be Correct\n\nPayment due: {}\n(Exact Fee only)\nMember ID: {}\nPayment Date: {}'.format(self.MemberID, self.Date, self.PaymentAmt),
-                           fg='black', bg='#00FF00', relief='raised', width=60, height=9)
+                                text= txt.format(self.PaymentAmt, self.MemberID, self.Date),
+                                fg='black', bg='#00FF00', relief='raised', width=60, height=9)
         self.confirm.config(font=(FONT, FONT_SIZE, STYLE))
         self.confirm.place(relx=0.5, rely=0.4, anchor="center")
 
@@ -136,7 +140,7 @@ class FinePayment(Container):
             return self.failednofine()
         
     #member has fine and correct amount 
-    def success(self, master, MembershipID, PaymentDate, PaymentAmount):
+    def success(self):
         self.b1 = tk.Button(self.container, text="Confirm Payment",
                     command=lambda:[self.CloseConfirmPage(), self.SQLPay(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
