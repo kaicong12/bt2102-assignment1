@@ -96,7 +96,7 @@ class FinePayment(Container):
 
         #home
         self.home2_btn = tk.Button(root, text='Back to Fines Menu',
-                             command=lambda:[self.container.grid_forget, FineLandingPage(self.root, self.parent, self.engine)],
+                             command=lambda:[self.container.grid_forget(), FineLandingPage(self.root, self.parent, self.engine)],
                              bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.home2_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home2_btn.place(relx=0.7, rely=0.75, anchor="center")
@@ -176,7 +176,7 @@ class FinePayment(Container):
         self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to payment button
-        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage, FinePayment(self.root, self.parent, self.engine)],
+        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
@@ -188,32 +188,32 @@ class FinePayment(Container):
         self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
          #back to payment button
-        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage, FinePayment(self.root, self.parent, self.engine)],
+        self.back_btn = tk.Button(self.container, text='Back to Payment Function', command=lambda:[self.CloseErrorPage(), FinePayment(self.root, self.parent, self.engine)],
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
 
     #close Error page
     def CloseErrorPage(self):
-        self.ErrorPop.lower
-        self.back_btn.lower
+        self.ErrorPop.lower()
+        self.back_btn.lower()
         
     #close Confirmation Page
     def CloseConfirmPage(self):
-        self.confirm.lower
-        self.return_btn.lower
-        self.b1.lower
+        self.confirm.lower()
+        self.return_btn.lower()
+        self.b1.lower()
 
     def ClosePayPopup(self):
-        self.instructions.lower
-        self.membership.lower
-        self.e1.lower
-        self.PaymentDate.lower
-        self.e2.lower
-        self.PaymentAmount.lower
-        self.e3.lower
-        self.pay.lower
-        self.home2_btn.lower
+        self.instructions.lower()
+        self.membership.lower()
+        self.e1.lower()
+        self.PaymentDate.lower()
+        self.e2.lower()
+        self.PaymentAmount.lower()
+        self.e3.lower()
+        self.pay.lower()
+        self.home2_btn.lower()
         
         
 
