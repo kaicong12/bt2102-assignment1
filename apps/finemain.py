@@ -144,7 +144,7 @@ class FinePayment(Container):
         sql_statement = "SELECT * FROM Fine WHERE memberid = %s"
         data_fine = self.cursor.execute(sql_statement,(self.MemberID,)).fetchall()
         if len(data_fine) > 0: #whether member has fine
-            actual_amount = data_fine[0][2]
+            actual_amount = data_fine[0][1]
             if actual_amount == int(self.PaymentAmt): #whether payment amount correct
                 return self.SQLPay()
             else:
@@ -167,8 +167,8 @@ class FinePayment(Container):
         sql_statement3 = "DELETE FROM Fine WHERE memberid = %s"
         self.cursor.execute(sql_statement3, (self.MemberID,))
         
-        sql_statement4 = "INSERT INTO Payment VALUES (%s, %s, %s)"
-        self.cursor.execute(sql_statement4, (self.MemberID, accessionNo, self.Date))
+        sql_statement4 = "INSERT INTO Payment VALUES (%s, %s)"
+        self.cursor.execute(sql_statement4, (self.MemberID, self.Date))
 
     def nofine(self):
         self.CloseConfirmPage()
