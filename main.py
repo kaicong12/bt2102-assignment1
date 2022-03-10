@@ -18,16 +18,5 @@ class LibraryApp(Container):
             USER, PASSWORD, HOST, PORT, DATABASE
         ))
 
-        self.root = Tk()
-
-        self.landing = LandingPage(self.root, self, self.engine)
-
-        self.root.mainloop()
-
-    def return_to_main_menu(self, child):
-        LandingPage(self.root, self, self.engine)
-        child.container.grid_forget()
-
-
-
-app = LibraryApp()
+engine.connect()   
+print("Success")

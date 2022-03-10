@@ -1,4 +1,6 @@
 from tkinter import Label, Button
+from Loan import Loan
+from Reservation import Reservation
 
 from apps.resources.variables import *
 from apps.resources.container import Container
@@ -22,6 +24,37 @@ class LandingPage(Container):
                                  bg='white')
         self.report_text.place(relx=0.7, rely=0.9, anchor='center')
 
+        
+        # loan option
+        self.landing_loan_image = self.open_image('apps/resources/loan.png', LANDING_PAGE_ICON_SIZE,
+                                                    LANDING_PAGE_ICON_SIZE)
+        self.loan_button = Button(root, image=self.landing_report_image, command=self.go_to_loan)
+        self.loan_button.place(relx=0.7, rely=0.7, anchor='center')
+        self.loan_text = Label(root, text='Loans', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
+                                 fg='black',
+                                 bg='white')
+        self.loan_text.place(relx=0.7, rely=0.9, anchor='center')
+        
+        # reservation option
+        self.landing_reservation_image = self.open_image('apps/resources/reservation.png', LANDING_PAGE_ICON_SIZE,
+                                                    LANDING_PAGE_ICON_SIZE)
+        self.reservation_button = Button(root, image=self.landing_report_image, command=self.go_to_reservation)
+        self.reservation_button.place(relx=0.7, rely=0.7, anchor='center')
+        self.reservation_text = Label(root, text='Loans', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
+                                 fg='black',
+                                 bg='white')
+        self.reservation_text.place(relx=0.7, rely=0.9, anchor='center')
+    
+
+
     def go_to_report(self):
         Report(self.root, self.parent, self.engine)
+        self.container.grid_forget()
+    
+    def go_to_loan(self):
+        Loan(self.root, self.parent, self.engine)
+        self.container.grid_forget()
+    
+    def go_to_reservation(self):
+        Reservation(self.root, self.parent, self.engine)
         self.container.grid_forget()
