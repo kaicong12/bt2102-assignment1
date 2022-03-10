@@ -8,8 +8,8 @@ from apps.resources.container import Container
 
 class LibraryApp(Container):
     def __init__(self):
-        USER = 'kctey'
-        PASSWORD = 'CQu1FxSp'
+        USER = 'root'
+        PASSWORD = 'Password1!'
         HOST = '127.0.0.1'
         PORT = 3306
         DATABASE = 'Library'

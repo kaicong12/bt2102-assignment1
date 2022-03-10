@@ -4,6 +4,7 @@ from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
 from apps.report.search import BookSearch, Notification
+from apps.member.member_landing import Membership, MemberCreate, MemberDelete
 
 from sqlalchemy import create_engine
 import pandas as pd
@@ -14,8 +15,8 @@ import pymysql
 
 class testestest(Container):
     def __init__(self):
-        USER = 'kctey'
-        PASSWORD = 'CQu1FxSp'
+        USER = 'root'
+        PASSWORD = 'Password1!'
         HOST = '127.0.0.1'
         PORT = 3306
         DATABASE = 'Library'
@@ -26,10 +27,9 @@ class testestest(Container):
 
         self.root = Tk()
 
-        self.landing = BookSearch(self.root, self, engine)
+        self.landing = Membership(self.root, self, engine)
 
         self.root.mainloop()
-
 
 
 app = testestest()
