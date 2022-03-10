@@ -4,8 +4,8 @@ from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
 from apps.report.search import BookSearch, Notification
-from bookmain import BookLandingPage
-from finemain import FineLandingPage
+from apps.bookmain import BookLandingPage
+from apps.finemain import FineLandingPage
 from landing_page import LandingPage
 
 from sqlalchemy import create_engine

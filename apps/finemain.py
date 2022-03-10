@@ -32,11 +32,9 @@ class FineLandingPage(Container):
 
         #main menu button
         home_btn = tk.Button(self.container, text='Back to Main Menu',
-                                 command=parent.return_to_main_menu, bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
+                                 command=lambda: parent.return_to_main_menu(self), bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
         home_btn.place(relx=0.7, rely=0.68, anchor="center")
-
-        root.mainloop()
 
 
 class FinePayment(Container):
