@@ -5,10 +5,8 @@ from Reservation import Reservation
 from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
-from finemain import FineLandingPage
-from bookmain import BookLandingPage
-#from apps.bookmain import BookLandingPage
-#from apps.finemain import FineLandingPage
+from apps.bookmain import BookLandingPage
+from apps.finemain import FineLandingPage
 from apps.member.member_landing import Membership
 
 class LandingPage(Container):
@@ -31,7 +29,7 @@ class LandingPage(Container):
         # book option
         self.landing_books_image = self.open_image('apps/resources/book.png', LANDING_PAGE_ICON_SIZE,
                                                     LANDING_PAGE_ICON_SIZE)
-        self.books_btn = Button(root, image=self.landing_books_image, command=self.go_to_book())
+        self.books_btn = Button(root, image=self.landing_books_image, command=self.go_to_book)
         self.books_btn.place(relx=0.5, rely=0.5, anchor='center')
         self.books_text = Label(root, text='Books', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
                                  fg='black',
@@ -41,7 +39,7 @@ class LandingPage(Container):
         #fine option
         self.landing_fines_image = self.open_image('apps/resources/fine.png', LANDING_PAGE_ICON_SIZE,
                                                     LANDING_PAGE_ICON_SIZE)
-        self.fines_btn = Button(root, image=self.landing_fines_image, command=self.go_to_fine())
+        self.fines_btn = Button(root, image=self.landing_fines_image, command=self.go_to_fine)
         self.fines_btn.place(relx=0.7, rely=0.9, anchor='center')
         self.fines_text = Label(root, text='Fines', font=(FONT, LANDING_PAGE_FONT_SIZE, STYLE),
                                  fg='black',
