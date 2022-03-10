@@ -164,6 +164,7 @@ class bookinsert(Container):
         self.return_btn.place(relx=0.5, rely=0.55, anchor="center")
 
     def success(self):
+        
         #success text box
         self.ErrorPop = tk.Label(self.container, text='Success! New book added in Library', fg='black', bg='#00FF00',
                                relief='raised', width=60, height=9)
@@ -184,6 +185,9 @@ class bookinsert(Container):
         #insert into author table
         author_names = self.authors.split(",")
         for author in author_names:
+            query3 = "INSERT INTO authors (name) VALUES (%s)"
+            self.cursor.execute(query3, (author))
+
             query2 = "INSERT INTO book_author (author_name, book_accession) VALUES (%s, %s)"
             self.cursor.execute(query2, (author, self.accessionNo))
         
@@ -241,7 +245,7 @@ class bookdraw(Container):
         self.accessionNo = self.e1.get()
         
         #retrieving data from sql
-        sql_statement = "Select * FROM books WHERE accession_no = %s"
+        sql_statement = "SELECT * FROM books WHERE accession_no = %s"
         book_data = self.cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
         
         title = book_data[0][1]
@@ -249,10 +253,10 @@ class bookdraw(Container):
         publisher = book_data[0][3]
         publication_year = book_data[0][4]
 
-        sql_statement2 = "Select * from book_author WHERE book_accession = %s"
-        bookauthors_data = self.cursor.execute(sql_statement2,(self.accessionNo,)).fetchall()
-        authors_string = ""
-        for author in bookauthors_data:
+        sql_statement2 = "SELECT * from book_author WHERE book_accession = %s"
+        self.bookauthors_data = self.cursor.execute(sql_statement2,(self.accessionNo,)).fetchall()
+        authors_string = self.bookauthors_data[0][0]
+        for author in self.bookauthors_data[1:]:
             authors_string += ", {}".format(author[0])
         
         #Confirmation text box
@@ -262,12 +266,21 @@ class bookdraw(Container):
         self.Confirm.config(font=(FONT, FONT_SIZE, STYLE))
         self.Confirm.place(relx=0.5, rely=0.4, anchor="center")
 
+        #confirm withdrawal button
+        self.b1 = tk.Button(self.container, text="Confirm Withdrawal",
+                    command=self.candraw,
+                    bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
+        self.b1.config(font=(FONT, FONT_SIZE, STYLE))
+        self.b1.place(relx=0.3, rely=0.45, anchor="center")
+
         #back to withdrawal button
         self.return_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseConfirmPage,
                                      bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.6, rely=0.55, anchor="center")
 
+    def candraw(self):
+        self.CloseConfirmPage()
         #sql code here to determine book on loan/ book on reservation/ success
         sql_statement = "SELECT * FROM loan WHERE BorrowedBookAccession = %s"
         data_loan = self.cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
@@ -276,72 +289,47 @@ class bookdraw(Container):
         data_reserve = self.cursor.execute(sql_statement2,(self.accessionNo,)).fetchall()
         
         if len(data_loan) > 0:
-            return self.failedonloan()
+            return self.bookonloan()
         elif len(data_reserve) > 0:
-            return self.failedonreserve()
+            return self.bookonreserve()
         else:
-            return self.success()
+            return self.SQLWithdraw()
         
-        root.mainloop()
-
-    #book on loan failure
-    def failedonloan(self):
-        #confirm withdrawal button
-        self.b1 = tk.Button(self.container, text="Confirm Withdrawal",
-                    command=lambda:[self.CloseConfirmPage, self.bookonloan],
-                                     bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
-        self.b1.config(font=(FONT, FONT_SIZE, STYLE))
-        self.b1.place(relx=0.3, rely=0.45, anchor="center")
-
-    def bookonloan(self, master):
+    def bookonloan(self):
         self.BookErrorPop = tk.Label(self.container, text='Error! Book is currently on Loan.', fg='black', bg='#FF0000',
                                relief='raised', width=60, height=3)
         self.BookErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
         self.BookErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to withdrawal button
-        self.back_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloserErrorPage,
+        self.back_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseErrorPage,
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.back_btn.place(relx=0.5, rely=0.7, anchor="center")
-
-    #book on reservation
-    def failedonreserve(self):
-        #confirm withdrawal button
-        self.b1 = tk.Button(self.container, text="Confirm Withdrawal",
-                    command=lambda:[self.CloseConfirmPage, self.bookonreserve],
-                                     bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
-        self.b1.config(font=(FONT, FONT_SIZE, STYLE))
-        self.b1.place(relx=0.3, rely=0.45, anchor="center")
         
-    def bookonreserve(self, master):
+    def bookonreserve(self):
         self.BookErrorPop = tk.Label(self.container, text='Error! Book is currently Reserved.', fg='black', bg='#FF0000',
                                relief='raised', width=60, height=3)
         self.BookErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
         self.BookErrorPop.place(relx=0.5, rely=0.4, anchor="center")
 
         #back to withdrawal button
-        self.return_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseError,
+        self.return_btn = tk.Button(self.container, text='Back to Withdrawal Function', command=self.CloseErrorPage,
                                      bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.5, rely=0.7, anchor="center")
-    
 
-    def success(self):
-        #confirm withdrawal button
-        self.b1 = tk.Button(self.container, text="Confirm Withdrawal",
-                    command=lambda:[self.CloseConfirmPage, self.SQLWithdraw],
-                                     bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
-        self.b1.config(font=(FONT, FONT_SIZE, STYLE))
-        self.b1.place(relx=0.3, rely=0.45, anchor="center")
-            
-    def SQLWithdraw(self, accessionNo, title, authors, isbn, publisher, year):
+    def SQLWithdraw(self):
         #deleting on sql
         sql_statement3 = "DELETE FROM books WHERE accession_no = %s"
         self.cursor.execute(sql_statement3,(self.accessionNo,))
 
         sql_statement4 = "DELETE from book_author WHERE book_accession = %s"
         self.cursor.execute(sql_statement4,(self.accessionNo,))
+
+        for author in self.bookauthors_data:
+            sql_statement5 = "DELETE from authors where name = %s"
+            self.cursor.execute(sql_statement5, (author[0]))
 
     def CloseErrorPage(self):
         self.BookErrorPop.lower()
@@ -351,4 +339,33 @@ class bookdraw(Container):
         self.Confirm.lower()
         self.b1.lower()
         self.return_btn.lower()
+
+
+    #book on loan failure
+    def failedonloan(self):
+        #confirm withdrawal button
+        self.b1 = tk.Button(self.container, text="Confirm Withdrawal",
+                    command=self.bookonloan,
+                    bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
+        self.b1.config(font=(FONT, FONT_SIZE, STYLE))
+        self.b1.place(relx=0.3, rely=0.45, anchor="center")
+        
+    #book on reservation
+    def failedonreserve(self):
+        #confirm withdrawal button
+        self.b1 = tk.Button(self.container, text="Confirm Withdrawal",
+                            command=self.bookonreserve,
+                            bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
+        self.b1.config(font=(FONT, FONT_SIZE, STYLE))
+        self.b1.place(relx=0.3, rely=0.45, anchor="center")
+        
+    def success(self):
+        #confirm withdrawal buttons
+        self.b1 = tk.Button(self.container, text="Confirm Withdrawal",
+                            command=lambda:[self.SQLWithdraw, self.CloseConfirmPage],
+                            bg='#c5e3e5', width=30, height=1, relief='raised', borderwidth=5)
+        self.b1.config(font=(FONT, FONT_SIZE, STYLE))
+        self.b1.place(relx=0.3, rely=0.45, anchor="center")
+
+            
 
