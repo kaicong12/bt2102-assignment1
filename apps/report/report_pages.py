@@ -14,7 +14,7 @@ def search_author_for_each_book(engine, book_list):
         tmp_author = [author_name[0] for author_name in data]
         author_data.append(tmp_author)
 
-    return author_data 
+    return author_data
 
 
 class Report(Container):
