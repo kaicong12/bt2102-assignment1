@@ -91,6 +91,7 @@ class LandingPage(Container):
         self.container.grid_forget()
 
     def go_to_book(self):
+        print('books')
         BookLandingPage(self.root, self.parent, self.engine)
         self.container.grid_forget()
 
