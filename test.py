@@ -4,7 +4,7 @@ from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
 from apps.report.search import BookSearch, Notification
-from apps.member.member_landing import Membership, MemberCreate, MemberDelete
+from apps.member.member_landing import MemberUpdate, Membership, MemberCreate, MemberDelete
 
 from sqlalchemy import create_engine
 import pandas as pd
@@ -27,7 +27,7 @@ class testestest(Container):
 
         self.root = Tk()
 
-        self.landing = Membership(self.root, self, engine)
+        self.landing = MemberUpdate(self.root, self, engine)
 
         self.root.mainloop()
 

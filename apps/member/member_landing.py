@@ -14,6 +14,15 @@ class Membership(Container):
         self.parent = parent
         self.engine = engine
 
+        # reports image
+        self.membership = self.open_image('apps/resources/membership.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
+        # reinitialize because tkinter would destroy self.report variable after using it
+        self.membership_image  = Label(self.container, image=self.membership)
+        self.membership_image.place(relx=SIDE_IMAGE_X, rely=SIDE_IMAGE_Y, anchor='center')
+        self.membership_text = Label(self.container, text='Membership', font=(FONT, FONT_SIZE, STYLE), fg='white', bg='black')
+        self.membership_text.place(relx=SIDE_TEXT_X, rely=SIDE_TEXT_Y, anchor='center')
+
+
         # title label
         self.label = Label(self.container, text='Select one of the options below:', fg='black', bg='#2dccb6',
                            relief='raised', width=60, height=3)
@@ -30,19 +39,19 @@ class Membership(Container):
         self.member_create_btn = Button(self.container, text='1. Membership Creation', command=self.go_to_create_member,
                             height=3, width=20, wraplength=200)
         self.member_create_btn.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#17a1d5')
-        self.member_create_btn.place(relx=BUTTON_X, rely=0.16)
+        self.member_create_btn.place(relx=0.55, rely=0.26)
 
         # Membership Deletion
         self.member_delete_btn = Button(self.container, text='2. Membership Deletion', command=self.go_to_delete_member,
                                 height=3, width=20, wraplength=200)
         self.member_delete_btn.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#2964e7')
-        self.member_delete_btn.place(relx=BUTTON_X, rely=0.32)
+        self.member_delete_btn.place(relx=0.55, rely=0.42)
 
-        # Membership Deletion
+        # Membership Update
         self.member_update_btn = Button(self.container, text='3. Membership Update', command=self.go_to_update_member,
                                 height=3, width=20, wraplength=200)
         self.member_update_btn.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#4e3ddc')
-        self.member_update_btn.place(relx=BUTTON_X, rely=0.48)
+        self.member_update_btn.place(relx=0.55, rely=0.58)
 
     def go_to_create_member(self):
         MemberCreate(self.root, self.parent, self.engine)
@@ -238,14 +247,14 @@ class MemberDelete(Container):
 
             self.confirm_delete_btn = Button(self.container, text='Confirm Delete', padx=10, pady=10,\
                 command=lambda:self.delete_member(self.ID_ent.get()), bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
-            self.confirm_delete_btn.config(font=(FONT,20,STYLE))
-            self.confirm_delete_btn.place(relx=0.35, rely=0.7, anchor='center')
+            self.confirm_delete_btn.config(font=(FONT,15,STYLE))
+            self.confirm_delete_btn.place(relx=0.40, rely=0.7, anchor='center')
 
             self.back_to_delete_btn = Button(self.container, text='Back to Delete Function', padx=10, pady=10,\
                 command=lambda:self.close(self.popup_heading_label, self.popup_body_label, self.confirm_delete_btn, self.back_to_delete_btn),\
                      bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
-            self.back_to_delete_btn.config(font=(FONT,20,STYLE), wraplength=300)
-            self.back_to_delete_btn.place(relx=0.55, rely=0.7, anchor='center')
+            self.back_to_delete_btn.config(font=(FONT,15,STYLE), wraplength=300)
+            self.back_to_delete_btn.place(relx=0.60, rely=0.7, anchor='center')
 
         else:
             if info == 0:
@@ -282,7 +291,7 @@ class MemberDelete(Container):
 
 class MemberUpdate(Container):
     def __init__(self, root, parent, engine):
-        super().__init__(root, "Delete Member Menu")
+        super().__init__(root, "Update Member Menu")
         self.init_image()
         self.parent = parent
         self.engine = engine
@@ -383,7 +392,7 @@ class MemberUpdate(Container):
             self.update_different_btn.config(font=(FONT, FONT_SIZE, STYLE))
             self.update_different_btn.place(relx=0.7, rely=0.9, anchor="center")
 
-            self.update_records_btn = Button(self.container, text='Update Records', command=lambda:self.popup(True, self.get_update_info()),\
+            self.update_records_btn = Button(self.container, text='Update Records', command=lambda:self.get_update_info(),\
                 bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,\
                 highlightthickness=4, highlightbackground="#eaba2d")
             self.update_records_btn.config(font=(FONT, FONT_SIZE, STYLE))
@@ -415,14 +424,14 @@ class MemberUpdate(Container):
             self.confirm_update_btn = Button(self.container, text='Confirm Update', padx=10, pady=10,\
                 command=lambda:self.update_member(self.ID_ent.get(), info), bg='#27c0ab', borderwidth=5, relief='raised',\
                 highlightthickness=4, highlightbackground='#fae420')
-            self.confirm_update_btn.config(font=(FONT,FONT_SIZE,STYLE))
-            self.confirm_update_btn.place(relx=0.35, rely=0.7, anchor='center')
+            self.confirm_update_btn.config(font=(FONT,15,STYLE))
+            self.confirm_update_btn.place(relx=0.40, rely=0.7, anchor='center')
 
             self.back_to_update_btn = Button(self.container, text='Back to Update Function', padx=10, pady=10,\
                 command=lambda:self.close(self.popup_heading_label, self.popup_body_label, self.confirm_update_btn, self.back_to_update_btn),\
                     bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
-            self.back_to_update_btn.config(font=(FONT,FONT_SIZE,STYLE), wraplength=300)
-            self.back_to_update_btn.place(relx=0.55, rely=0.7, anchor='center')
+            self.back_to_update_btn.config(font=(FONT,15,STYLE), wraplength=300)
+            self.back_to_update_btn.place(relx=0.60, rely=0.7, anchor='center')
 
         else:
             if info == 0:
@@ -452,10 +461,14 @@ class MemberUpdate(Container):
     
     def get_update_info(self):
         data = [self.name_ent.get(), self.faculty_ent.get(), self.phone_ent.get(), self.email_ent.get()]
+        status = True
         for i in data:
             if i == '':
-                raise ValueError("Field cannot be empty")
-        return data
+                status = False
+        if status:
+            self.popup(status, data)
+        else:
+            self.popup(status)
 
     def update_member(self, id, update:tuple):
         try:
@@ -469,6 +482,3 @@ class MemberUpdate(Container):
         except(IntegrityError, DataError, OperationalError):
             self.close(self.popup_heading_label, self.popup_body_label, self.confirm_update_btn, self.back_to_update_btn)
             self.popup(False)
-        
-        except(ValueError):
-            print("Handle Error")
