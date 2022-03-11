@@ -150,11 +150,18 @@ class bookinsert(Container):
         sql_statement = "SELECT * FROM books WHERE accession_no = %s"
         data_book = self.cursor.execute(sql_statement,(self.accessionNo,)).fetchall()
 
+        try:
+            self.publication_year = int(self.publication_year)
+        except:
+            return self.failed()
+            
         #checking for missing or incomplete fields
         listOfInputs = [self.accessionNo, self.title, self.authors, self.isbn, self.publisher, self.publication_year]
         if "" in listOfInputs: #checks missing
             return self.failed()
         elif len(data_book) > 0: #check for duplicate
+            return self.failed()
+        elif self.publication_year>9999 or self.publication_year<1000:
             return self.failed()
         else:
             return self.success()
