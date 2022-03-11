@@ -1,6 +1,4 @@
-from sqlalchemy import create_engine
 import tkinter as tk
-import pandas as pd
 from apps.resources.variables import *
 from apps.resources.container import Container
 import datetime as dt
@@ -16,25 +14,27 @@ class FineLandingPage(Container):
         #book image
         self.book = self.open_image('apps/resources/fine.png', SIDE_IMAGE_WIDTH, SIDE_IMAGE_HEIGHT)
         self.book_image  = tk.Label(self.container, image=self.book)
-        self.book_image.place(relx=0.25, rely=0.45, anchor='center')
+        self.book_image.place(relx=SIDE_IMAGE_X, rely=SIDE_IMAGE_Y, anchor='center')
 
         #instructions
-        instructions = tk.Label(self.container, text='Select one of the options below:', fg='black', bg='#2dccb6',
+        instructions = tk.Label(self.container, text='Select one of the options below:', fg='black', bg='#cceae9',
                            relief='raised', width=60, height=3)
         instructions.config(font=(FONT, FONT_SIZE, STYLE))
-        instructions.place(relx=0.5, rely=0.09, anchor="center")
+        instructions.place(relx=HEADING_LABEL_X, rely=HEADING_LABEL_Y, anchor="center")
 
         #payment button
         payment_btn = tk.Button(self.container, command = lambda:[self.container.grid_forget(), FinePayment(root, self.parent, self.engine)],
-                                   text="Fine Payment", fg='white', bg='#17a1d5', height=3, width=20, wraplength=200)
+                                   text="Fine Payment", fg='white', bg='#17a1d5', height=3, width=12, wraplength=200)
         payment_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        payment_btn.place(relx=0.7, rely=0.4, anchor='center')
+        payment_btn.place(relx=BUTTON_X, rely=0.4)
 
         #main menu button
         home_btn = tk.Button(self.container, text='Back to Main Menu',
-                                 command=lambda: parent.return_to_main_menu(self), bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
+                            command=lambda: parent.return_to_main_menu(self),
+                             bg='#cceae9', width=60, height=1, relief='raised',
+                             borderwidth=5, highlightthickness=4, highlightbackground="#eaba2d")
         home_btn.config(font=(FONT, FONT_SIZE, STYLE))
-        home_btn.place(relx=0.7, rely=0.68, anchor="center")
+        home_btn.place(relx=0.55, rely=0.9, anchor="center")
 
 
 class FinePayment(Container):
@@ -55,32 +55,32 @@ class FinePayment(Container):
         #membership id
         self.membership = tk.Label(self.container, text = "Membership ID",  bg='#1391c1', fg='white', height=3, width=20)
         self.membership.config(font=(FONT, FONT_SIZE, STYLE))
-        self.membership.place(relx=MENU_LABEL_X, rely=0.25, anchor="center")
+        self.membership.place(relx=MENU_LABEL_X, rely=0.3, anchor="center")
 
         self.e1 = tk.Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-        self.e1.place(relx=REPORT_ENTRY_BOX_X, rely=0.23, anchor='center',
+        self.e1.place(relx=REPORT_ENTRY_BOX_X, rely=0.3, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
         
         #payment date
         self.PaymentDate = tk.Label(self.container, text = "Payment Date", bg='#1fa4df', fg='white', height=3, width=20)
         self.PaymentDate.config(font=(FONT, FONT_SIZE, STYLE))
-        self.PaymentDate.place(relx=MENU_LABEL_X, rely=0.36, anchor='center')
+        self.PaymentDate.place(relx=MENU_LABEL_X, rely=0.43, anchor='center')
 
         self.TodayDate = dt.datetime.today().strftime('%Y-%m-%d')
 
         self.e2 = tk.Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
         self.e2.insert(0, self.TodayDate)
-        self.e2.place(relx=REPORT_ENTRY_BOX_X, rely=0.40, anchor='center',
+        self.e2.place(relx=REPORT_ENTRY_BOX_X, rely=0.43, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
         
 
         #payment amount
         self.PaymentAmount = tk.Label(self.container, text = "Payment Amount", bg='#49abde', fg='white', height=3, width=20)
         self.PaymentAmount.config(font=(FONT, FONT_SIZE, STYLE))
-        self.PaymentAmount.place(relx=MENU_LABEL_X, rely=0.49, anchor='center')
+        self.PaymentAmount.place(relx=MENU_LABEL_X, rely=0.56, anchor='center')
 
         self.e3 = tk.Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-        self.e3.place(relx=REPORT_ENTRY_BOX_X, rely=0.52, anchor='center',
+        self.e3.place(relx=REPORT_ENTRY_BOX_X, rely=0.56, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
 
         #pay fine
@@ -99,15 +99,10 @@ class FinePayment(Container):
         self.home2_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.home2_btn.place(relx=0.7, rely=0.9, anchor="center")
 
-        root.mainloop()
-
     def FinePay(self):
         self.MemberID = self.e1.get()
         self.Date = self.e2.get()
         self.PaymentAmt = self.e3.get()
-
-        popup_bg = "#9ddd58"
-        popup_font_color = "#000000"
         
         #confirmation text box
         self.confirm = tk.Label(self.container,
@@ -126,14 +121,14 @@ class FinePayment(Container):
         self.confirm_btn = tk.Button(self.container, text='Confirm Delete', padx=10, pady=10,
                                     command=self.canpay, bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
         self.confirm_btn.config(font=(FONT,20,STYLE))
-        self.confirm_btn.place(relx=0.35, rely=0.7, anchor='center')
+        self.confirm_btn.place(relx=0.4, rely=0.7, anchor='center')
 
         #back to fine button
         self.return_btn = tk.Button(self.container, text="Back to Payment Function", padx=10, pady=10,
-                                    command=lambda:[self.CloseConfirmPage(), FinePayment(self.root, self.parent, self.engine)],
+                                    command=self.CloseConfirmPage,
                                     bg='#27c0ab', borderwidth=5, relief='raised', highlightthickness=4, highlightbackground='#fae420')
         self.return_btn.config(font=(FONT,20,STYLE), wraplength=300)
-        self.return_btn.place(relx=0.55, rely=0.7, anchor='center')
+        self.return_btn.place(relx=0.6, rely=0.7, anchor='center')
 
 
     def canpay(self):
@@ -141,7 +136,7 @@ class FinePayment(Container):
         self.PaymentAmt = self.e3.get()
         
         #sql code there to check if member has fine/ whether payment amount correct/ success
-        sql_statement = "SELECT * FROM Fine WHERE memberid = %s"
+        sql_statement = "SELECT * FROM fine WHERE memberid = %s"
         data_fine = self.cursor.execute(sql_statement,(self.MemberID,)).fetchall()
         if len(data_fine) > 0: #whether member has fine
             actual_amount = data_fine[0][1]
@@ -160,14 +155,14 @@ class FinePayment(Container):
         self.Date = self.e2.get()
         
         #get accessionNo
-        sql_statement2 = "SELECT * FROM Fine WHERE memberid = %s"
+        sql_statement2 = "SELECT * FROM fine WHERE memberid = %s"
         accessionNo = self.cursor.execute(sql_statement2, (self.MemberID,)).fetchall()[0][1]
 
         #delete from fine
-        sql_statement3 = "DELETE FROM Fine WHERE memberid = %s"
+        sql_statement3 = "DELETE FROM fine WHERE memberid = %s"
         self.cursor.execute(sql_statement3, (self.MemberID,))
         
-        sql_statement4 = "INSERT INTO Payment VALUES (%s, %s)"
+        sql_statement4 = "INSERT INTO payment VALUES (%s, %s)"
         self.cursor.execute(sql_statement4, (self.MemberID, self.Date))
 
     def nofine(self):
