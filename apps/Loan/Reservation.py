@@ -37,15 +37,15 @@ class Reservation(Container):
 
         # Book reserve button
         self.book_reserve = Button(self.container, text='8. Reserve a Book', command=self.book_reserve,
-                                  padx=55, pady=20, wraplength=200)
+                                  height=3, width=20, wraplength=200)
         self.book_reserve.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#17a1d5')
-        self.book_reserve.place(relx=BUTTON_X, rely=0.16)
+        self.book_reserve.place(relx=0.55, rely=0.26)
 
         # Book cancel button
         self.cancel = Button(self.container, text='9. Cancel Reservation', command=self.cancel,
-                                height=3, width=12, wraplength=200)
+                                height=3, width=20, wraplength=200)
         self.cancel.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#2964e7')
-        self.cancel.place(relx=BUTTON_X, rely=0.29)
+        self.cancel.place(relx=0.55, rely=0.42)
 
     def open_image(self, image_path, resized_width, resized_height):
         path = image_path
@@ -78,7 +78,7 @@ class Reserve(Container):
             
             # back to reservation_menu button
             self.back_btn = Button(self.container, text='Back to Reservations Menu', command=self.go_to_reservations,
-                                 bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
+                                 bg='#27c0ab', width=22, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
             self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
             self.back_btn.place(relx=0.7, rely=0.9, anchor="center")
@@ -93,9 +93,9 @@ class Reserve(Container):
             # Accession Number box
             self.AN_box = Label(self.container, text='Accession Number', bg='#1391c1', fg='white', height=3, width=20)
             self.AN_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.AN_box.place(relx=MENU_LABEL_X, rely=0.23, anchor='center')
+            self.AN_box.place(relx=MENU_LABEL_X, rely=0.30, anchor='center')
             self.AN_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.23, anchor='center',
+            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.30, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
             # Membership ID box
@@ -109,10 +109,10 @@ class Reserve(Container):
             # Reserve date box
             self.RD_box = Label(self.container, text='Reserve Date', bg='#1391c1', fg='white', height=3, width=20)
             self.RD_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.RD_box.place(relx=MENU_LABEL_X, rely=0.8, anchor='center')
+            self.RD_box.place(relx=MENU_LABEL_X, rely=0.70, anchor='center')
             self.RD_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
             self.RD_entry.insert(0, (date.today()))
-            self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
+            self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.70, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
             
@@ -298,7 +298,7 @@ class Cancel(Container):
             
             # back to reservations_menu button
             self.back_btn = Button(self.container, text='Back to Reservations Menu', command=self.go_to_reservations,
-                                 bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
+                                 bg='#27c0ab', width=22, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
             self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
             self.back_btn.place(relx=0.7, rely=0.9, anchor="center")
@@ -313,9 +313,9 @@ class Cancel(Container):
             # Accession Number box
             self.AN_box = Label(self.container, text='Accession Number', bg='#1391c1', fg='white', height=3, width=20)
             self.AN_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.AN_box.place(relx=MENU_LABEL_X, rely=0.23, anchor='center')
+            self.AN_box.place(relx=MENU_LABEL_X, rely=0.30, anchor='center')
             self.AN_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.23, anchor='center',
+            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.30, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
             # Membership ID box
@@ -329,10 +329,10 @@ class Cancel(Container):
             # Cancel date box
             self.CD_box = Label(self.container, text='Cancel Date', bg='#1391c1', fg='white', height=3, width=20)
             self.CD_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.CD_box.place(relx=MENU_LABEL_X, rely=0.8, anchor='center')
+            self.CD_box.place(relx=MENU_LABEL_X, rely=0.70, anchor='center')
             self.CD_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
             self.CD_entry.insert(0, (date.today()))
-            self.CD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
+            self.CD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.70, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
     def go_to_confirm(self):

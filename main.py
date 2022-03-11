@@ -6,7 +6,7 @@ from apps.resources.container import Container
 class LibraryApp(Container):
     def __init__(self):
         USER = 'root'
-        PASSWORD = 'password'
+        PASSWORD = 'Password1!'
         HOST = '127.0.0.1'
         PORT = 3306
         DATABASE = 'library'
