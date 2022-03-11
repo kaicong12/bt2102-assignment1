@@ -1,5 +1,8 @@
+from textwrap import wrap
 from tkinter import *
 from PIL import Image, ImageTk
+from numpy import insert
+from sqlalchemy import null, text, create_engine
 from apps.resources.variables import *
 from apps.resources.container import Container
 from datetime import *
@@ -30,18 +33,19 @@ class Reservation(Container):
                                  bg='#c5e3e5', width=60, height=1, relief='raised', borderwidth=5)
         self.return_btn.config(font=(FONT, FONT_SIZE, STYLE))
         self.return_btn.place(relx=0.5, rely=0.9, anchor="center")  # return_btn is always mid align
+        
 
         # Book reserve button
         self.book_reserve = Button(self.container, text='8. Reserve a Book', command=self.book_reserve,
-                                  height=3, width=12,wraplength=200)
+                                  padx=55, pady=20, wraplength=200)
         self.book_reserve.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#17a1d5')
-        self.book_reserve.place(relx=BUTTON_X, rely=0.35)
+        self.book_reserve.place(relx=BUTTON_X, rely=0.16)
 
         # Book cancel button
         self.cancel = Button(self.container, text='9. Cancel Reservation', command=self.cancel,
                                 height=3, width=12, wraplength=200)
         self.cancel.config(font=(FONT, FONT_SIZE, STYLE), fg='white', bg='#2964e7')
-        self.cancel.place(relx=BUTTON_X, rely=0.55)
+        self.cancel.place(relx=BUTTON_X, rely=0.29)
 
     def open_image(self, image_path, resized_width, resized_height):
         path = image_path
@@ -74,8 +78,8 @@ class Reserve(Container):
             
             # back to reservation_menu button
             self.back_btn = Button(self.container, text='Back to Reservations Menu', command=self.go_to_reservations,
-                                 bg='#27c0ab', width=25, height=2, relief='raised', borderwidth=5,
-                                   wraplength=600, highlightthickness=4, highlightbackground="#eaba2d")
+                                 bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
+                                 highlightthickness=4, highlightbackground="#eaba2d")
             self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
             self.back_btn.place(relx=0.7, rely=0.9, anchor="center")
 
@@ -89,28 +93,35 @@ class Reserve(Container):
             # Accession Number box
             self.AN_box = Label(self.container, text='Accession Number', bg='#1391c1', fg='white', height=3, width=20)
             self.AN_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.AN_box.place(relx=MENU_LABEL_X, rely=0.35, anchor='center')
+            self.AN_box.place(relx=MENU_LABEL_X, rely=0.23, anchor='center')
             self.AN_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.35, anchor='center',
+            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.23, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
             # Membership ID box
-            self.ID_box = Label(self.container, text='Membership ID', bg='#49abde', fg='white', height=3, width=20)
+            self.ID_box = Label(self.container, text='Membership ID', bg='#1391c1', fg='white', height=3, width=20)
             self.ID_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.ID_box.place(relx=MENU_LABEL_X, rely=0.48, anchor='center')
+            self.ID_box.place(relx=MENU_LABEL_X, rely=0.5, anchor='center')
             self.ID_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-            self.ID_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.48, anchor='center',
+            self.ID_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.5, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
             # Reserve date box
-            self.RD_box = Label(self.container, text='Reserve Date', bg='#96c4e3', fg='white', height=3, width=20)
+            self.RD_box = Label(self.container, text='Reserve Date', bg='#1391c1', fg='white', height=3, width=20)
             self.RD_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.RD_box.place(relx=MENU_LABEL_X, rely=0.61, anchor='center')
+            self.RD_box.place(relx=MENU_LABEL_X, rely=0.8, anchor='center')
             self.RD_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
             self.RD_entry.insert(0, (date.today()))
-            self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.61, anchor='center',
+            self.RD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
-
+            
+            
+    
+    
+        
+        
+        
+        
     def go_to_confirm(self):
             #incomplete entry error
             listOfEntrys = [self.AN_entry.get(), self.ID_entry.get(), self.RD_entry.get()]
@@ -118,69 +129,65 @@ class Reserve(Container):
                 self.failed()
                 #Back to reserve function button
                 self.backReserveButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20, 
-                                                bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606",
-                                                relief="raised", command=self.close_incompleteError,
-                                                font=(FONT, FONT_SIZE, STYLE))
-                self.backReserveButton.place(relx=0.5, rely=0.7, anchor="center")
+                bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_incompleteError)
+                self.backReserveButton.place(relx=0.6, rely=0.65, anchor="center")
             else:
                 #Prompt
                 self.popupPromptLabel = Label(self.container, text="Confirm Reservation Details To \nBe Correct", 
-                width = 40, height=16, font=(FONT, FONT_SIZE, STYLE), anchor='n', bg='#9ddd58')
+                width = 40, height=15, anchor='n', font=(FONT,FONT_SIZE, STYLE), bg="#9ddd58", fg="#000000")
                 self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
                 #AN Label
-                self.input_AN = Label(self.container, text=self.AN_entry.get(), font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.input_AN.place(relx=0.6, rely=0.35, anchor="center")
+                self.input_AN = Label(self.container, text=self.AN_entry.get())
+                self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
                 #Book title Label
-                sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get(), bg='#9ddd58')
+                sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
                 data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
-                self.input_BT = Label(self.container, text=data_BT, font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.input_BT.place(relx=0.6, rely=0.42, anchor="center")
+                self.input_BT = Label(self.container, text=data_BT) 
+                self.input_BT.place(relx=0.6, rely=0.35, anchor="center")
                 #Membership ID Label
-                self.input_ID = Label(self.container, text=self.ID_entry.get(), font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.input_ID.place(relx=0.6, rely=0.49, anchor="center")
+                self.input_ID = Label(self.container, text=self.ID_entry.get())
+                self.input_ID.place(relx=0.6, rely=0.4, anchor="center")
                 #Member name Label
-                sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get(), bg='#9ddd58')
+                sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get())
                 data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
-                self.input_name = Label(self.container, text=data_name, font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.input_name.place(relx=0.6, rely=0.56, anchor="center")
+                self.input_name = Label(self.container, text=data_name) 
+                self.input_name.place(relx=0.6, rely=0.45, anchor="center")
                 #Reserve date Label
-                self.input_RD = Label(self.container, text=self.RD_entry.get(), font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.input_RD.place(relx=0.6, rely=0.63, anchor="center")
-
+                self.input_RD = Label(self.container, text=self.RD_entry.get())
+                self.input_RD.place(relx=0.6, rely=0.5, anchor="center")
                 #Labels
-                self.AN_label = Label(self.container, text = "Accession Number:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.AN_label.place(relx=0.45, rely=0.35, anchor="center")
-                self.BT_label = Label(self.container, text = "Book Title:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.BT_label.place(relx=0.45, rely=0.42, anchor="center")
-                self.ID_label = Label(self.container, text = "Membership ID:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.ID_label.place(relx=0.45, rely=0.49, anchor="center")
-                self.name_label = Label(self.container, text = "Member Name:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.name_label.place(relx=0.42, rely=0.56, anchor="center")
-                self.RD_label = Label(self.container, text = "Reserve Date", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-                self.RD_label.place(relx=0.45, rely=0.63, anchor="center")
+                self.AN_label = Label(self.container, text = "Accession Number:")
+                self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
+                self.BT_label = Label(self.container, text = "Book Title:")
+                self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
+                self.ID_label = Label(self.container, text = "Membership ID:")
+                self.ID_label.place(relx=0.4, rely=0.4, anchor="center")
+                self.name_label = Label(self.container, text = "Member Name:")
+                self.name_label.place(relx=0.4, rely=0.45, anchor="center")
+                self.RD_label = Label(self.container, text = "Reserve Date")
+                self.RD_label.place(relx=0.4, rely=0.5, anchor="center")
             
-
+            
+            
                 #Confirm Reservation Button
-                self.confirmReservationButton = Button(self.container, text="Confirm Reservation", padx=20, pady=20,
-                                                wraplength=300,
-                                                command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4,
-                                                highlightbackground="#ecb606", relief="raised", font=(FONT, FONT_SIZE, STYLE))
-                self.confirmReservationButton.place(relx=0.37, rely=0.73, anchor="center")
+                self.confirmReservationButton = Button(self.container, text="Confirm Reservation", padx=20, pady=20, 
+                command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
+                self.confirmReservationButton.place(relx=0.4, rely=0.65, anchor="center")
                 #Back to reserve function button
-                self.backBorrowButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20,
-                                                wraplength=400,
-                                                bg="#27c0ab",borderwidth=5, highlightthickness=4,
-                                               highlightbackground="#ecb606", relief="raised",
-                                               command=self.close_confirmPage, font=(FONT, FONT_SIZE, STYLE))
-                self.backBorrowButton.place(relx=0.6, rely=0.73, anchor="center")
-
+                self.backBorrowButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20, 
+                bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
+                self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
+            
+     
+    
     def failed(self):   
         self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
-        fg='yellow', bg='#cc0505',
+        fg='yellow', bg='#FF0000',
         relief='raised', width=30, height=15)
         self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
-        self.ErrorPop.place(relx=0.5, rely=0.5, anchor="center")
-
+        self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift()   
+    
     def close_incompleteError(self):
         self.ErrorPop.lower()
         self.backReserveButton.lower()  
@@ -223,6 +230,7 @@ class Reserve(Container):
         self.RD_label.lower()
         
         for x in range(1):
+           
             #Reservation quota error
             sql_statement = "Select ReserverID FROM reservation WHERE ReserverID = '{}'".format(self.ID_entry.get())
             data_BookReserved = self.cursor.execute(sql_statement).fetchall()
@@ -246,7 +254,7 @@ class Reserve(Container):
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backReserveButton = Button(self.container, text="Back to Reserve Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
-        self.backReserveButton.place(relx=0.5, rely=0.7, anchor="center")
+        self.bacReserveButton.place(relx=0.5, rely=0.65, anchor="center")
     
     def go_to_fineError(self):
         sql_statement = "Select amount FROM fine WHERE memberid = '{}'".format(self.ID_entry.get())
@@ -254,7 +262,6 @@ class Reserve(Container):
         total_fine = 0
         for x in range(len(data_fine)):
             total_fine += data_fine[x][0]
-        print(total_fine)
         
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Member has outstanding Fine of:\n ${}".format(total_fine), 
         fg='yellow', bg='#FF0000',
@@ -262,12 +269,14 @@ class Reserve(Container):
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20, 
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
-        self.backBorrowButton.place(relx=0.5, rely=0.7, anchor="center")
+        self.backBorrowButton.place(relx=0.5, rely=0.65, anchor="center")
 
     def closeError(self):
         self.popupErrorLabel.lower()
         self.backBorrowButton.lower()
-
+        
+        
+    
     def go_to_reservations(self):
             Reservation(self.root, self.parent, self.engine)
             self.container.grid_forget()  
@@ -288,8 +297,7 @@ class Cancel(Container):
             
             # back to reservations_menu button
             self.back_btn = Button(self.container, text='Back to Reservations Menu', command=self.go_to_reservations,
-                                 bg='#27c0ab', width=25, height=2, relief='raised', borderwidth=5,
-                                   wraplength=600,
+                                 bg='#27c0ab', width=20, height=2, relief='raised', borderwidth=5,
                                  highlightthickness=4, highlightbackground="#eaba2d")
             self.back_btn.config(font=(FONT, FONT_SIZE, STYLE))
             self.back_btn.place(relx=0.7, rely=0.9, anchor="center")
@@ -304,26 +312,26 @@ class Cancel(Container):
             # Accession Number box
             self.AN_box = Label(self.container, text='Accession Number', bg='#1391c1', fg='white', height=3, width=20)
             self.AN_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.AN_box.place(relx=MENU_LABEL_X, rely=0.35, anchor='center')
+            self.AN_box.place(relx=MENU_LABEL_X, rely=0.23, anchor='center')
             self.AN_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.35, anchor='center',
+            self.AN_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.23, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
             # Membership ID box
             self.ID_box = Label(self.container, text='Membership ID', bg='#1391c1', fg='white', height=3, width=20)
             self.ID_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.ID_box.place(relx=MENU_LABEL_X, rely=0.48, anchor='center')
+            self.ID_box.place(relx=MENU_LABEL_X, rely=0.5, anchor='center')
             self.ID_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
-            self.ID_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.48, anchor='center',
+            self.ID_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.5, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
             # Cancel date box
             self.CD_box = Label(self.container, text='Cancel Date', bg='#1391c1', fg='white', height=3, width=20)
             self.CD_box.config(font=(FONT, FONT_SIZE, STYLE))
-            self.CD_box.place(relx=MENU_LABEL_X, rely=0.61, anchor='center')
+            self.CD_box.place(relx=MENU_LABEL_X, rely=0.8, anchor='center')
             self.CD_entry = Entry(self.container, font=(FONT, FONT_SIZE, STYLE))
             self.CD_entry.insert(0, (date.today()))
-            self.CD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.61, anchor='center',
+            self.CD_entry.place(relx=REPORT_ENTRY_BOX_X, rely=0.8, anchor='center',
                                width=REPORT_ENTRY_BOX_WIDTH, height=REPORT_ENTRY_BOX_HEIGHT)
             
     def go_to_confirm(self):
@@ -334,64 +342,60 @@ class Cancel(Container):
             #Back to cancel function button
             self.backCancelButton = Button(self.container, text="Back to Cancellation Function", padx=20, pady=20, 
              bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_incompleteError)
-            self.backCancelButton.config(font=(FONT, FONT_SIZE, STYLE))
-            self.backCancelButton.place(relx=0.5, rely=0.7, anchor="center")
+            self.backCancelButton.place(relx=0.6, rely=0.65, anchor="center")
             
         else:
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Cancellation Details To \nBe Correct", 
-            width=40, height=16, font=(FONT, FONT_SIZE, STYLE), anchor='n', bg='#9ddd58')
+            width = 40, height=15, anchor='n', font=(FONT,FONT_SIZE, STYLE), bg="#9ddd58", fg="#000000")
             self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
             #AN Label
-            self.input_AN = Label(self.container, text=self.AN_entry.get(), font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.input_AN.place(relx=0.6, rely=0.35, anchor="center")
+            self.input_AN = Label(self.container, text=self.AN_entry.get())
+            self.input_AN.place(relx=0.6, rely=0.3, anchor="center")
             #Book title Label
             sql_statement = "SELECT title FROM books WHERE accession_no = '{}'".format(self.AN_entry.get())
             data_BT = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.input_BT = Label(self.container, text=data_BT, font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.input_BT.place(relx=0.6, rely=0.42, anchor="center")
+            self.input_BT = Label(self.container, text=data_BT) 
+            self.input_BT.place(relx=0.6, rely=0.35, anchor="center")
             #Membership ID Label
-            self.input_ID = Label(self.container, text=self.ID_entry.get(), font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.input_ID.place(relx=0.6, rely=0.49, anchor="center")
+            self.input_ID = Label(self.container, text=self.ID_entry.get())
+            self.input_ID.place(relx=0.6, rely=0.4, anchor="center")
             #Member name Label
             sql_statement = "SELECT name FROM members WHERE memberid = '{}'".format(self.ID_entry.get())
             data_name = self.cursor.execute(sql_statement).fetchall()[0][0]
-            self.input_name = Label(self.container, text=data_name, font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.input_name.place(relx=0.6, rely=0.56, anchor="center")
+            self.input_name = Label(self.container, text=data_name) 
+            self.input_name.place(relx=0.6, rely=0.45, anchor="center")
             #Cancel date Label
-            self.input_CD = Label(self.container, text=self.CD_entry.get(), font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.input_CD.place(relx=0.6, rely=0.63, anchor="center")
+            self.input_CD = Label(self.container, text=self.CD_entry.get())
+            self.input_CD.place(relx=0.6, rely=0.5, anchor="center")
             #Labels
-            self.AN_label = Label(self.container, text = "Accession Number:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.AN_label.place(relx=0.4, rely=0.35, anchor="center")
-            self.BT_label = Label(self.container, text = "Book Title:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.BT_label.place(relx=0.4, rely=0.42, anchor="center")
-            self.ID_label = Label(self.container, text = "Membership ID:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.ID_label.place(relx=0.4, rely=0.49, anchor="center")
-            self.name_label = Label(self.container, text = "Member Name:", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.name_label.place(relx=0.4, rely=0.56, anchor="center")
-            self.CD_label = Label(self.container, text = "Cancellation Date", font=(FONT, FONT_SIZE, STYLE), bg='#9ddd58')
-            self.CD_label.place(relx=0.4, rely=0.63, anchor="center")
+            self.AN_label = Label(self.container, text = "Accession Number:")
+            self.AN_label.place(relx=0.4, rely=0.3, anchor="center")
+            self.BT_label = Label(self.container, text = "Book Title:")
+            self.BT_label.place(relx=0.4, rely=0.35, anchor="center")
+            self.ID_label = Label(self.container, text = "Membership ID:")
+            self.ID_label.place(relx=0.4, rely=0.4, anchor="center")
+            self.name_label = Label(self.container, text = "Member Name:")
+            self.name_label.place(relx=0.4, rely=0.45, anchor="center")
+            self.CD_label = Label(self.container, text = "Cancellation Date")
+            self.CD_label.place(relx=0.4, rely=0.5, anchor="center")
            
             #Confirm Cancellation Button
-            self.confirmCancellationButton = Button(self.container, text="Confirm Cancellation", padx=20, pady=20,
-                                                    wraplength=300,
-                                                    command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4,
-                                                    highlightbackground="#ecb606", relief="raised", font=(FONT, FONT_SIZE, STYLE))
-            self.confirmCancellationButton.place(relx=0.37, rely=0.73, anchor="center")
+            self.confirmCancellationButton = Button(self.container, text="Confirm Cancellation", padx=20, pady=20, 
+            command=self.go_to_error, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
+            self.confirmCancellationButton.place(relx=0.4, rely=0.65, anchor="center")
             #Back to cancel function button
-            self.backBorrowButton = Button(self.container, text="Back to Cancellation Function", padx=20, pady=20,
-                                           wraplength=400,
-                                            bg="#27c0ab",borderwidth=5, highlightthickness=4,
-                                           highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage, font=(FONT, FONT_SIZE, STYLE))
-            self.backBorrowButton.place(relx=0.6, rely=0.73, anchor="center")
+            self.backBorrowButton = Button(self.container, text="Back to Cancellation Function", padx=20, pady=20, 
+             bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised", command=self.close_confirmPage)
+            self.backBorrowButton.place(relx=0.6, rely=0.65, anchor="center")
             
     def failed(self):   
         self.ErrorPop = Label(self.container, text='Error!\n\n Duplicate, Missing or\nIncomplete fields.',
-        fg='yellow', bg='#cc0505',
+        fg='yellow', bg='#FF0000',
         relief='raised', width=30, height=15)
         self.ErrorPop.config(font=(FONT, FONT_SIZE, STYLE))
         self.ErrorPop.place(relx=0.5, rely=0.4, anchor="center")
+        self.ErrorPop.lift() 
 
     def close_incompleteError(self):
         self.ErrorPop.lower()
@@ -440,12 +444,14 @@ class Cancel(Container):
                 self.go_to_cancelError()
                 break
             else:
-                sql_statement = "DELETE FROM reservation WHERE ReserverID = '{}' AND ReservedBookAccession = '{}'".format(self.ID_entry.get(), self.AN_entry.get())
+                sql_statement = "DELETE FROM reservation WHERE ReserverID = '{}' AND ReservedBookAccession = '{}'".format(self.ID_entry.get(), self.AN_entry.get()  )
                 self.cursor.execute(sql_statement)     
+
+        
 
     def go_to_cancelError(self):
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Member has no such reservation.", 
-        fg='yellow', bg='#cc0505',
+        fg='yellow', bg='#FF0000',
         relief='raised', width=30, height=15)
         self.popupErrorLabel.place(relx=0.5, rely=0.3, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Cancellation Function", padx=20, pady=20, 

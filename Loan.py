@@ -369,7 +369,7 @@ class Return(Container):
         else:
             #Prompt
             self.popupPromptLabel = Label(self.container, text="Confirm Return Details To \nBe Correct", 
-            width = 30, height=20, font=(FONT), anchor='n')
+            width = 40, height=15, anchor='n', font=(FONT,FONT_SIZE, STYLE), bg="#9ddd58", fg="#000000")
             self.popupPromptLabel.place(relx=0.5, rely=0.5, anchor='center')
             #AN Entry
             self.input_AN = Label(self.container, text=self.AN_entry.get())
