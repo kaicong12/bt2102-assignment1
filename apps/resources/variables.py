@@ -8,8 +8,8 @@ FONT = 'Arial'
 FONT_SIZE = 25
 STYLE = 'bold'
 
-CANVAS_HEIGHT = 600
-CANVAS_WIDTH = 1000
+CANVAS_HEIGHT = 1000
+CANVAS_WIDTH = 1500
 
 SIDE_IMAGE_HEIGHT = 500
 SIDE_IMAGE_WIDTH = 500
@@ -27,6 +27,9 @@ MENU_LABEL_X = 0.25
 REPORT_ENTRY_BOX_X = 0.65
 REPORT_ENTRY_BOX_HEIGHT = 100
 REPORT_ENTRY_BOX_WIDTH = 700
+
+popup_bg = "#9ddd58"
+popup_font_color = "#000000"
 
 BOOKS_SEARCH = ['Accession Number', 'Title', 'ISBN', 'Publisher', 'Year', 'Author']
 BOOKS_ON_LOAN = ['Accession Number', 'Title', 'ISBN', 'Publisher', 'Year', 'Author']
