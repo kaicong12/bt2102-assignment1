@@ -7,11 +7,11 @@ import pymysql
 
 class LibraryApp(Container):
     def __init__(self):
-        USER = 'root'
-        PASSWORD = 'password'
+        USER = 'kctey'
+        PASSWORD = 'CQu1FxSp'
         HOST = '127.0.0.1'
         PORT = 3306
-        DATABASE = 'library'
+        DATABASE = 'Library'
 
         self.engine = create_engine('mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
             USER, PASSWORD, HOST, PORT, DATABASE
