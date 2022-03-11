@@ -1,9 +1,8 @@
+from landing_page import LandingPage
+from apps.resources.container import Container
 from tkinter import Tk
 from sqlalchemy import create_engine
 import pymysql
-
-from landing_page import LandingPage
-from apps.resources.container import Container
 
 
 class LibraryApp(Container):

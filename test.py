@@ -5,6 +5,9 @@ from apps.resources.container import Container
 from apps.report.report_pages import Report
 from apps.report.search import BookSearch, Notification
 from apps.member.member_landing import MemberUpdate, Membership, MemberCreate, MemberDelete
+from apps.bookmain import BookLandingPage
+from apps.finemain import FineLandingPage
+from landing_page import LandingPage
 
 from sqlalchemy import create_engine
 import pandas as pd
@@ -15,8 +18,8 @@ import pymysql
 
 class testestest(Container):
     def __init__(self):
-        USER = 'root'
-        PASSWORD = 'Password1!'
+        USER = 'kctey'
+        PASSWORD = 'CQu1FxSp'
         HOST = '127.0.0.1'
         PORT = 3306
         DATABASE = 'Library'
@@ -30,6 +33,11 @@ class testestest(Container):
         self.landing = MemberUpdate(self.root, self, engine)
 
         self.root.mainloop()
+
+    #def return_to_main_menu(self, child):
+        #LandingPage(self.root, self, self.engine)
+        #child.container.grid_forget()
+
 
 
 app = testestest()

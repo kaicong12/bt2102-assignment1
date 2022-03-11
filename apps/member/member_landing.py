@@ -1,8 +1,4 @@
-#from textwrap import wrap
-from multiprocessing import parent_process
-from tkinter import Label, Button, Entry, Tk, ttk, Canvas, Frame
-from PIL import Image, ImageTk
-from sqlalchemy import engine_from_config, null, text
+from tkinter import Label, Button, Entry
 from sqlalchemy.exc import IntegrityError, DataError, OperationalError
 from apps.resources.variables import *
 from apps.resources.container import Container
@@ -412,7 +408,7 @@ class MemberUpdate(Container):
             popup_font_color = "#000000"
             memberInfo_format = "Member ID: {}\nName: {}\nFaculty: {}\nPhone Number: {}\nEmail Address: {}".format(self.ID_ent.get(), info[0],\
                 info[1], info[2], info[3])
-            
+
             self.popup_heading_label = Label(self.container, text=popup_text, bg =popup_bg, fg=popup_font_color, width=35, height=2)
             self.popup_heading_label.config(font=(FONT,FONT_SIZE, STYLE))
             self.popup_heading_label.place(relx=0.5, rely=0.3, anchor="center")
@@ -455,7 +451,7 @@ class MemberUpdate(Container):
             popup_text = "Success!\n\n ALS Membership Updated."
             popup_bg = "#9ddd58"
             popup_font_color = "#000000"
-            
+
             self.popup_heading_label = Label(self.container, text=popup_text, bg =popup_bg, fg=popup_font_color, width=35, height=14)
             self.popup_heading_label.config(font=(FONT,FONT_SIZE, STYLE))
             self.popup_heading_label.place(relx=0.5, rely=0.5, anchor="center")
@@ -483,7 +479,7 @@ class MemberUpdate(Container):
     def open(self, *args):
         for element in args:
             element.lift()
-    
+
     def get_update_info(self):
         data = [self.name_ent.get(), self.faculty_ent.get(), self.phone_ent.get(), self.email_ent.get()]
         status = True
@@ -503,7 +499,7 @@ class MemberUpdate(Container):
             cursor.execute(sql_query)
             self.close(self.popup_heading_label, self.popup_body_label, self.confirm_update_btn, self.back_to_update_btn)
             self.success_notif()
-        
+
         except(IntegrityError, DataError, OperationalError):
             self.close(self.popup_heading_label, self.popup_body_label, self.confirm_update_btn, self.back_to_update_btn)
             self.popup(False)
