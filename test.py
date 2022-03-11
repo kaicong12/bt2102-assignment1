@@ -4,6 +4,7 @@ from apps.resources.variables import *
 from apps.resources.container import Container
 from apps.report.report_pages import Report
 from apps.report.search import BookSearch, Notification
+from apps.member.member_landing import MemberUpdate, Membership, MemberCreate, MemberDelete
 from apps.bookmain import BookLandingPage
 from apps.finemain import FineLandingPage
 from landing_page import LandingPage
@@ -17,8 +18,8 @@ import pymysql
 
 class testestest(Container):
     def __init__(self):
-        USER = 'root'
-        PASSWORD = 'joansoh17'
+        USER = 'kctey'
+        PASSWORD = 'CQu1FxSp'
         HOST = '127.0.0.1'
         PORT = 3306
         DATABASE = 'Library'
@@ -29,7 +30,7 @@ class testestest(Container):
 
         self.root = Tk()
 
-        self.landing = FineLandingPage(self.root,self, engine)
+        self.landing = MemberUpdate(self.root, self, engine)
 
         self.root.mainloop()
 
