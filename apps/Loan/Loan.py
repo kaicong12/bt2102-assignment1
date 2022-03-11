@@ -283,7 +283,7 @@ class Borrow(Container):
         self.popupErrorLabel = Label(self.container, text="Error!\n\n Member loan quota exceeded.",\
             fg='yellow', bg='#FF0000', relief='raised', width=40, height=15)
         self.popupErrorLabel.config(font=(FONT, FONT_SIZE, STYLE))
-        self.popupErrorLabel.place(relx=0.5, rely=0.7, anchor="center")
+        self.popupErrorLabel.place(relx=0.5, rely=0.5, anchor="center")
         self.backBorrowButton = Button(self.container, text="Back to Borrow Function", padx=20, pady=20,\
             command=self.closeError, bg="#27c0ab",borderwidth=5, highlightthickness=4, highlightbackground="#ecb606", relief="raised")
         self.backBorrowButton.config(font=(FONT, FONT_SIZE, STYLE))
